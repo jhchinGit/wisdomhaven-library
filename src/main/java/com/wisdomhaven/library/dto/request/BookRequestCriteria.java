@@ -1,5 +1,6 @@
 package com.wisdomhaven.library.dto.request;
 
+import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
@@ -12,5 +13,5 @@ public record BookRequestCriteria(
         @RequestParam("author")
         Optional<String> author,
         @RequestParam("isbn")
-        Optional<String> isbn
+        Optional<@Pattern(regexp = "^\\d{10}|\\d{13}$", message = "Invalid format") String> isbn
 ) {}

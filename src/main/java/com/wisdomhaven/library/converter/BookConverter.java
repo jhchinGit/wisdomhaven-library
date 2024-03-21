@@ -1,6 +1,6 @@
 package com.wisdomhaven.library.converter;
 
-import com.wisdomhaven.library.dto.request.response.BookResponseDTO;
+import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.model.Book;
 
 public class BookConverter {
