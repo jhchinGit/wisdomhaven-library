@@ -1,8 +1,7 @@
-package com.wisdomhaven.library.global;
+package com.wisdomhaven.library.handler;
 
 import com.wisdomhaven.library.dto.misc.ApiErrorMessage;
 import com.wisdomhaven.library.dto.misc.ErrorMessage;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -14,6 +13,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -29,16 +29,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
         return buildResponseEntity("Malformed JSON request", HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
-        ApiErrorMessage apiErrorMessage = ApiErrorMessage
-                .builder()
-                .title(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .build();
-        return buildResponseEntity(apiErrorMessage, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -58,6 +48,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .errorMessages(errorMessageList)
                 .build();
         return buildResponseEntity(apiErrorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    protected ResponseEntity<Object> handleResponseStatus(ResponseStatusException ex) {
+        ApiErrorMessage apiErrorMessage = ApiErrorMessage
+                .builder()
+                .title(ex.getBody().getTitle())
+                .statusCode(ex.getBody().getStatus())
+                .message(ex.getReason())
+                .build();
+
+        return buildResponseEntity(apiErrorMessage, HttpStatus.valueOf(ex.getBody().getStatus()));
     }
 
     private <T> ResponseEntity<Object> buildResponseEntity(T apiError, HttpStatus httpStatus) {

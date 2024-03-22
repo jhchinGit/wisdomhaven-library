@@ -1,10 +1,12 @@
 package com.wisdomhaven.library.repository;
 
 import com.wisdomhaven.library.model.Book;
+import jakarta.annotation.Nullable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface BookRepository extends CrudRepository<Book, Integer> {
@@ -13,12 +15,16 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
             SELECT b
             FROM Book b
             WHERE (:bookId IS NULL OR b.id = :bookId) AND
-            (:title IS NULL OR b.title = :title) AND
-            (:author IS NULL OR b.author = :author) AND
+            (:title IS NULL OR LOWER(b.title) LIKE '%' || LOWER(:title) || '%') AND
+            (:author IS NULL OR LOWER(b.author) LIKE '%' || LOWER(:author) || '%') AND
             (:isbn IS NULL OR b.isbn = :isbn)
             """)
-    List<Book> findByIdOrTitleOrAuthorOrIsbn(@Param("bookId") Integer id,
-                                             @Param("title") String title,
-                                             @Param("author") String author,
-                                             @Param("isbn") String isbn);
+    List<Book> findByIdOrTitleOrAuthorOrIsbn(@Param("bookId") @Nullable Integer id,
+                                             @Param("title") @Nullable String title,
+                                             @Param("author") @Nullable String author,
+                                             @Param("isbn") @Nullable String isbn);
+
+    boolean existsByIsbn(String isbn);
+
+    Collection<Book> findByIsbn(String isbn);
 }

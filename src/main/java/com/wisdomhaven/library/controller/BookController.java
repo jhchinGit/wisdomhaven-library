@@ -17,14 +17,18 @@ import java.util.List;
 @RequestMapping(path="books")
 public class BookController {
 
+    private final IBookService bookService;
+
     @Autowired
-    private IBookService bookService;
+    public BookController(IBookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping
     public ResponseEntity<List<BookResponseDTO>> getBooks(BookRequestCriteria requestCriteria) {
         responseUtil.validateRequest(requestCriteria);
 
-        List<BookResponseDTO> bookResponseDTOList = bookService
+        List<BookResponseDTO> bookResponseDTOList = this.bookService
                 .getBooks(requestCriteria.id().orElse(null),
                         requestCriteria.title().orElse(null),
                         requestCriteria.author().orElse(null),
@@ -34,7 +38,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDTO> getBook(@PathVariable Integer id) {
-        BookResponseDTO bookResponseDTO = bookService.getBook(id);
+        BookResponseDTO bookResponseDTO = this.bookService.getBook(id);
         return new ResponseEntity<>(bookResponseDTO, HttpStatus.OK);
     }
 
@@ -43,10 +47,12 @@ public class BookController {
         responseUtil.validateRequest(bookRequestBody);
 
         return new ResponseEntity<>(
-                bookService.createBook(
+                this.bookService.createBook(
                         bookRequestBody.title(),
                         bookRequestBody.author(),
                         bookRequestBody.isbn()),
                 HttpStatus.CREATED);
     }
+
+    // TODO: PUT AND DELETE
 }

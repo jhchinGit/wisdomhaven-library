@@ -4,6 +4,7 @@ import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.model.Book;
 
 public class BookConverter {
+    private BookConverter() {}
     public static BookResponseDTO ToBookResponseDTO(Book book) {
         return BookResponseDTO
                 .builder()
@@ -11,6 +12,7 @@ public class BookConverter {
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .isbn(book.getIsbn())
+                .quantity(book.getQuantity())
                 .build();
     }
 }
