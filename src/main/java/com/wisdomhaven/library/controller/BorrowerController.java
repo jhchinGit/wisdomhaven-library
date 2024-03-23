@@ -35,7 +35,7 @@ public class BorrowerController {
         RequestUtil.validate(requestCriteria, pageableRequest);
 
         Page<BorrowerResponseDTO> borrowerResponseDTOList = this.borrowerService
-                .getBorrowers(requestCriteria.id().orElse(null),
+                .getBorrowers(requestCriteria.borrowerId().orElse(null),
                         requestCriteria.name().orElse(null),
                         requestCriteria.email().orElse(null),
                         PageableUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),

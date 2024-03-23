@@ -6,6 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "borrower")
@@ -17,7 +23,7 @@ public class Borrower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "borrower_id")
-    private int id;
+    private int borrowerId;
 
     @Column(name = "name")
     @NotNull
@@ -26,4 +32,15 @@ public class Borrower {
     @Column(name = "email")
     @NotNull
     private String email;
+
+    @OneToMany(mappedBy = "borrower", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private List<Transaction> transactionList;
+
+    @Column(name = "created_date")
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant createdDate;
+
+    @Column(name = "modified_date")
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant modifiedDate;
 }

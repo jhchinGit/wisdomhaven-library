@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
 public record BookRequestCriteria(
-        @RequestParam("id")
-        Optional<Integer> id,
+        @RequestParam("bookId")
+        Optional<Integer> bookId,
         @RequestParam("title")
         Optional<String> title,
         @RequestParam("author")

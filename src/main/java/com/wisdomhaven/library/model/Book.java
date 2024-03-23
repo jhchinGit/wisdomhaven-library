@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "book")
@@ -17,7 +22,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
-    private Integer id;
+    private Integer bookId;
 
     @Column(name = "title")
     @NotNull
@@ -31,7 +36,15 @@ public class Book {
     @NotNull
     private String isbn;
 
-    @Column(name = "quantity")
-    @NotNull
-    private Integer quantity;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "transactionId")
+    private Transaction transaction;
+
+    @Column(name = "created_date")
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant createdDate;
+
+    @Column(name = "modified_date")
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant modifiedDate;
 }

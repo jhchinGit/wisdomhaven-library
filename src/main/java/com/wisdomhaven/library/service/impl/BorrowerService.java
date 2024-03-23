@@ -37,7 +37,7 @@ public class BorrowerService implements IBorrowerService {
     }
 
     @Override
-    public Page<BorrowerResponseDTO> getBorrowers(Integer id,
+    public Page<BorrowerResponseDTO> getBorrowers(Integer borrowerId,
                                                   String name,
                                                   String email,
                                                   Integer pageNumber,
@@ -49,7 +49,7 @@ public class BorrowerService implements IBorrowerService {
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sortable.sort());
 
-        Page<Borrower> borrowerPage = this.borrowerRepository.findByIdOrNameOrEmail(id, name, email, pageable);
+        Page<Borrower> borrowerPage = this.borrowerRepository.findByBorrowerIdOrNameOrEmail(borrowerId, name, email, pageable);
         if (borrowerPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }

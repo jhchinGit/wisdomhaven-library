@@ -8,7 +8,7 @@ public class BorrowerConverter {
     public static BorrowerResponseDTO ToBorrowerResponseDTO(Borrower borrower) {
         return BorrowerResponseDTO
                 .builder()
-                .id(borrower.getId())
+                .borrowerId(borrower.getBorrowerId())
                 .name(borrower.getName())
                 .email(borrower.getEmail())
                 .build();

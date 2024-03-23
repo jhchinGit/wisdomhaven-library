@@ -1,52 +1,44 @@
 package com.wisdomhaven.library.model;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
+import java.util.List;
+
+@Entity
+@Table(name = "transaction")
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
-    private int bookId;
-    private int borrowerId;
-    private LocalDate transactionDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
+    private int transactionId;
+
+    @Column(name = "is_return")
     private boolean isReturn;
 
-    public Transaction() {
-    }
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    private List<Book> books;
 
-    public Transaction(int bookId, int borrowerId, LocalDate transactionDate, boolean isReturn) {
-        this.bookId = bookId;
-        this.borrowerId = borrowerId;
-        this.transactionDate = transactionDate;
-        this.isReturn = isReturn;
-    }
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "borrowerId")
+    private Borrower borrower;
 
-    public int getBookId() {
-        return bookId;
-    }
+    @Column(name = "created_date")
+    @CreationTimestamp(source = SourceType.DB)
+    private Instant createdDate;
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public int getBorrowerId() {
-        return borrowerId;
-    }
-
-    public void setBorrowerId(int borrowerId) {
-        this.borrowerId = borrowerId;
-    }
-
-    public LocalDate getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(LocalDate transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public boolean isReturn() {
-        return isReturn;
-    }
-
-    public void setReturn(boolean aReturn) {
-        isReturn = aReturn;
-    }
+    @Column(name = "modified_date")
+    @UpdateTimestamp(source = SourceType.DB)
+    private Instant modifiedDate;
 }

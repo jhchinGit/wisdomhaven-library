@@ -32,7 +32,6 @@ public class BookService implements IBookService {
         bookValidOrderByFieldMap.put("title", "title");
         bookValidOrderByFieldMap.put("author", "author");
         bookValidOrderByFieldMap.put("isbn", "isbn");
-        bookValidOrderByFieldMap.put("quantity", "quantity");
     }
 
     @Autowired
@@ -41,7 +40,7 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public Page<BookResponseDTO> getBooks(Integer id,
+    public Page<BookResponseDTO> getBooks(Integer bookId,
                                           String title,
                                           String author,
                                           String isbn,
@@ -54,7 +53,7 @@ public class BookService implements IBookService {
         }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sortable.sort());
 
-        Page<Book> bookPage = this.bookRepository.findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn, pageable);
+        Page<Book> bookPage = this.bookRepository.findByBookIdOrTitleOrAuthorOrIsbn(bookId, title, author, isbn, pageable);
         if (bookPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
@@ -67,13 +66,13 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public BookResponseDTO getBook(Integer id) {
+    public BookResponseDTO getBook(Integer bookId) {
         return this.bookRepository
-                .findById(id)
+                .findById(bookId)
                 .map(BookConverter::ToBookResponseDTO)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format(BOOK_NOT_FOUND, id)));
+                        String.format(BOOK_NOT_FOUND, bookId)));
     }
 
     @Override
@@ -87,7 +86,6 @@ public class BookService implements IBookService {
                                         .title(title)
                                         .author(author)
                                         .isbn(isbn)
-                                        .quantity(existingBooks.size() + 1)
                                         .build()));
     }
 

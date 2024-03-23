@@ -8,11 +8,10 @@ public class BookConverter {
     public static BookResponseDTO ToBookResponseDTO(Book book) {
         return BookResponseDTO
                 .builder()
-                .id(book.getId())
+                .bookId(book.getBookId())
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .isbn(book.getIsbn())
-                .quantity(book.getQuantity())
                 .build();
     }
 }

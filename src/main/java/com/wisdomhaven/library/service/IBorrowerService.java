@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IBorrowerService {
-    Page<BorrowerResponseDTO> getBorrowers(Integer id,
+    Page<BorrowerResponseDTO> getBorrowers(Integer borrowerId,
                                            String name,
                                            String email,
                                            Integer pageNumber,

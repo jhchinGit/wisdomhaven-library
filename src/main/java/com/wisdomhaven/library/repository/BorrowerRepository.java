@@ -12,21 +12,21 @@ public interface BorrowerRepository extends CrudRepository<Borrower, Integer> {
     @Query(value = """
             SELECT b
             FROM Borrower b
-            WHERE (:borrowerId IS NULL OR b.id = :borrowerId) AND
+            WHERE (:borrowerId IS NULL OR b.borrowerId = :borrowerId) AND
             (:name IS NULL OR LOWER(b.name) LIKE '%' || LOWER(:name) || '%') AND
             (:email IS NULL OR LOWER(b.email) = LOWER(:email))
             """,
     countQuery = """
             SELECT count(*)
             FROM Borrower b
-            WHERE (:borrowerId IS NULL OR b.id = :borrowerId) AND
+            WHERE (:borrowerId IS NULL OR b.borrowerId = :borrowerId) AND
             (:name IS NULL OR LOWER(b.name) LIKE '%' || LOWER(:name) || '%') AND
             (:email IS NULL OR LOWER(b.email) = LOWER(:email))
             """)
-    Page<Borrower> findByIdOrNameOrEmail(@Param("borrowerId") @Nullable Integer id,
-                                         @Param("name") @Nullable String name,
-                                         @Param("email") @Nullable String email,
-                                         Pageable pageable);
+    Page<Borrower> findByBorrowerIdOrNameOrEmail(@Param("borrowerId") @Nullable Integer borrowerId,
+                                                 @Param("name") @Nullable String name,
+                                                 @Param("email") @Nullable String email,
+                                                 Pageable pageable);
 
     boolean existsByEmailIgnoreCase(@Nullable String email);
 }

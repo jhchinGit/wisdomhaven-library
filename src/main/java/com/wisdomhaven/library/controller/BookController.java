@@ -32,7 +32,7 @@ public class BookController {
         RequestUtil.validate(requestCriteria, pageableRequest);
 
         Page<BookResponseDTO> bookResponseDTOList = this.bookService
-                .getBooks(requestCriteria.id().orElse(null),
+                .getBooks(requestCriteria.bookId().orElse(null),
                         requestCriteria.title().orElse(null),
                         requestCriteria.author().orElse(null),
                         requestCriteria.isbn().orElse(null),
@@ -42,9 +42,9 @@ public class BookController {
         return ResponseUtil.buildResponseEntity(bookResponseDTOList, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity getBook(@PathVariable Integer id) {
-        return ResponseUtil.buildResponseEntity(this.bookService.getBook(id), HttpStatus.OK);
+    @GetMapping(path = "/{bookId}", produces = "application/json")
+    public ResponseEntity getBook(@PathVariable Integer bookId) {
+        return ResponseUtil.buildResponseEntity(this.bookService.getBook(bookId), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")

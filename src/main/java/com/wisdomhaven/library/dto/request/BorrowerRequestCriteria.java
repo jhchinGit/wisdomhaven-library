@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Optional;
 
 public record BorrowerRequestCriteria(
-        @RequestParam("id")
-        Optional<Integer> id,
+        @RequestParam("borrowerId")
+        Optional<Integer> borrowerId,
         @RequestParam("name")
         Optional<String> name,
         @RequestParam("email")
