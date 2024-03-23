@@ -17,7 +17,7 @@ public class Borrower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "borrower_id")
-    private int borrowerId;
+    private int id;
 
     @Column(name = "name")
     @NotNull

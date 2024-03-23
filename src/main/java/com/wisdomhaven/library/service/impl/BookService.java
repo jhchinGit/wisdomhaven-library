@@ -6,6 +6,10 @@ import com.wisdomhaven.library.model.Book;
 import com.wisdomhaven.library.repository.BookRepository;
 import com.wisdomhaven.library.service.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,19 +29,25 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<BookResponseDTO> getBooks(Integer id, String title, String author, String isbn) {
-        // TODO: Pagination, Hateoas
+    public Page<BookResponseDTO> getBooks(Integer id,
+                                          String title,
+                                          String author,
+                                          String isbn,
+                                          Integer limit,
+                                          Integer offset) {
+
+        Pageable pageable = PageRequest.of(offset, limit);
+        // TODO: sorting, Hateoas
         List<BookResponseDTO> bookResponseDTOList = this.bookRepository
-                .findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn)
-                .stream()
+                .findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn, pageable)
                 .map(BookConverter::ToBookResponseDTO)
-                .toList();
+                .stream().toList();
 
         if (bookResponseDTOList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
 
-        return bookResponseDTOList;
+        return new PageImpl<>(bookResponseDTOList, pageable, bookResponseDTOList.size());
     }
 
     @Override
@@ -52,7 +62,7 @@ public class BookService implements IBookService {
 
     @Override
     public BookResponseDTO createBook(String title, String author, String isbn) {
-        List<Book> existingBooks = this.bookRepository.findByIsbn(isbn).stream().toList();
+        List<Book> existingBooks = this.bookRepository.findByIsbn(isbn);
         validateBookCreation(existingBooks, title, author, isbn);
 
         return BookConverter.ToBookResponseDTO(

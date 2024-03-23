@@ -2,10 +2,12 @@ package com.wisdomhaven.library.controller;
 
 import com.wisdomhaven.library.dto.request.BookRequestBody;
 import com.wisdomhaven.library.dto.request.BookRequestCriteria;
+import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.service.IBookService;
 import com.wisdomhaven.library.util.responseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,15 +27,19 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> getBooks(BookRequestCriteria requestCriteria) {
+    public ResponseEntity<List<BookResponseDTO>> getBooks(BookRequestCriteria requestCriteria,
+                                                          PageableRequest pageableRequest) {
         responseUtil.validateRequest(requestCriteria);
 
-        List<BookResponseDTO> bookResponseDTOList = this.bookService
+        Page<BookResponseDTO> bookResponseDTOList = this.bookService
                 .getBooks(requestCriteria.id().orElse(null),
                         requestCriteria.title().orElse(null),
                         requestCriteria.author().orElse(null),
-                        requestCriteria.isbn().orElse(null));
-        return new ResponseEntity<>(bookResponseDTOList, HttpStatus.OK);
+                        requestCriteria.isbn().orElse(null),
+                        pageableRequest.limit().orElse(null),
+                        pageableRequest.offset().orElse(null));
+        // convert page into list of object
+        return new ResponseEntity<>(bookResponseDTOList.getContent(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -1,11 +1,16 @@
 package com.wisdomhaven.library.service;
 
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface IBookService {
-    List<BookResponseDTO> getBooks(Integer Id, String title, String author, String isbn);
-    BookResponseDTO getBook(Integer Id);
+    Page<BookResponseDTO> getBooks(
+            Integer id,
+            String title,
+            String author,
+            String isbn,
+            Integer limit,
+            Integer offset);
+    BookResponseDTO getBook(Integer id);
     BookResponseDTO createBook(String title, String author, String isbn);
 }

@@ -2,14 +2,15 @@ package com.wisdomhaven.library.repository;
 
 import com.wisdomhaven.library.model.Book;
 import jakarta.annotation.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface BookRepository extends CrudRepository<Book, Integer> {
+public interface BookRepository extends ListCrudRepository<Book, Integer> {
 
     @Query("""
             SELECT b
@@ -19,12 +20,11 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
             (:author IS NULL OR LOWER(b.author) LIKE '%' || LOWER(:author) || '%') AND
             (:isbn IS NULL OR b.isbn = :isbn)
             """)
-    List<Book> findByIdOrTitleOrAuthorOrIsbn(@Param("bookId") @Nullable Integer id,
+    Page<Book> findByIdOrTitleOrAuthorOrIsbn(@Param("bookId") @Nullable Integer id,
                                              @Param("title") @Nullable String title,
                                              @Param("author") @Nullable String author,
-                                             @Param("isbn") @Nullable String isbn);
+                                             @Param("isbn") @Nullable String isbn,
+                                             Pageable pageable);
 
-    boolean existsByIsbn(String isbn);
-
-    Collection<Book> findByIsbn(String isbn);
+    List<Book> findByIsbn(String isbn);
 }
