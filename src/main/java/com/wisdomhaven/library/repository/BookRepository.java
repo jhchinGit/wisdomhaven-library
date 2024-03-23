@@ -9,6 +9,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends ListCrudRepository<Book, Integer> {
 
@@ -43,4 +44,13 @@ public interface BookRepository extends ListCrudRepository<Book, Integer> {
             b.transaction IS NULL
             """)
     List<Book> findUnborrowedBookByIsbn(@Param("isbnList") List<String> isbnList);
+
+    @Query("""
+            SELECT b
+            FROM Book b
+            WHERE b.transaction.transactionId = :transactionId AND
+            b.isbn = :isbn
+            """)
+    Optional<Book> findByTransactionIdAndIsbn(@Param("transactionId") Integer transactionId,
+                                              @Param("isbn") String isbn);
 }

@@ -1,5 +1,6 @@
 package com.wisdomhaven.library.controller;
 
+import com.wisdomhaven.library.dto.request.BorrowingBookReturnCriteria;
 import com.wisdomhaven.library.dto.request.BorrowingRequestBody;
 import com.wisdomhaven.library.service.IBorrowingService;
 import com.wisdomhaven.library.util.RequestUtil;
@@ -8,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(path = "borrowings")
@@ -24,7 +23,7 @@ public class BorrowingController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity createTransaction(@RequestBody BorrowingRequestBody borrowingRequestBody) {
+    public ResponseEntity createBorrowing(@RequestBody BorrowingRequestBody borrowingRequestBody) {
         RequestUtil.validate(borrowingRequestBody);
 
         return ResponseUtil.buildResponseEntity(
@@ -32,5 +31,11 @@ public class BorrowingController {
                         borrowingRequestBody.borrowerId(),
                         borrowingRequestBody.isbnList()),
                 HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "/{transactionId}/books/{isbn}")
+    public ResponseEntity returnBookByIsbn(BorrowingBookReturnCriteria borrowingBookReturnCriteria) {
+        this.borrowingService.returnBookByIsbn(borrowingBookReturnCriteria.transactionId(), borrowingBookReturnCriteria.isbn());
+        return ResponseUtil.buildResponseEntity(HttpStatus.OK);
     }
 }

@@ -63,6 +63,19 @@ public class BorrowingService implements IBorrowingService {
                 .build();
     }
 
+    @Override
+    public void returnBookByIsbn(Integer transactionId, String isbn) {
+        Book book = this.bookRepository
+                .findByTransactionIdAndIsbn(transactionId, isbn)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("The book with the Isbn %s either cannot be located or has not been borrowed.", isbn)
+                ));
+
+        book.setTransaction(null);
+        this.bookRepository.save(book);
+    }
+
     private void validationIsbnDuplication(List<String> isbnList) {
         String duplicateIsbn = isbnList
                 .stream()

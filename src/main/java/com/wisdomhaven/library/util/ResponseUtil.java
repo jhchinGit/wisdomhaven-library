@@ -9,6 +9,10 @@ import org.springframework.lang.Nullable;
 public final class ResponseUtil {
     private ResponseUtil() {}
 
+    public static ResponseEntity buildResponseEntity(HttpStatusCode status) {
+        return buildResponseEntity(null, status);
+    }
+
     public static <T> ResponseEntity buildResponseEntity(@Nullable T body, HttpStatusCode status) {
         if (body instanceof Page<?> page) {
             return new ResponseEntity<>(buildPageResponse(page), status);

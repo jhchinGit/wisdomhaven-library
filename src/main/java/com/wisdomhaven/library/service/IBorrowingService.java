@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IBorrowingService {
     BorrowingResponseDTO createBorrowing(Integer borrowerId, List<String> isbnList);
+
+    void returnBookByIsbn(Integer transactionId, String isbn);
 }
