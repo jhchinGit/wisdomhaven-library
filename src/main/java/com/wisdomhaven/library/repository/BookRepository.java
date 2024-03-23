@@ -35,4 +35,12 @@ public interface BookRepository extends ListCrudRepository<Book, Integer> {
                                                  Pageable pageable);
 
     List<Book> findByIsbn(String isbn);
+
+    @Query("""
+            SELECT b
+            FROM Book b
+            WHERE b.isbn IN :isbnList AND
+            b.transaction IS NULL
+            """)
+    List<Book> findUnborrowedBookByIsbn(@Param("isbnList") List<String> isbnList);
 }

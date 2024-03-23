@@ -24,9 +24,6 @@ public class Transaction {
     @Column(name = "transaction_id")
     private int transactionId;
 
-    @Column(name = "is_return")
-    private boolean isReturn;
-
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private List<Book> books;
 
