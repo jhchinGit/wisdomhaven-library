@@ -2,10 +2,14 @@ package com.wisdomhaven.library.controller;
 
 import com.wisdomhaven.library.dto.request.BorrowerRequestBody;
 import com.wisdomhaven.library.dto.request.BorrowerRequestCriteria;
+import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
-import com.wisdomhaven.library.service.impl.BorrowerService;
-import com.wisdomhaven.library.util.responseUtil;
+import com.wisdomhaven.library.service.IBorrowerService;
+import com.wisdomhaven.library.util.PageNumberUtil;
+import com.wisdomhaven.library.util.RequestUtil;
+import com.wisdomhaven.library.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,35 +18,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
-@RequestMapping(path="borrowers")
+@RequestMapping(path = "borrowers")
 public class BorrowerController {
 
-    private final BorrowerService borrowerService;
+    private final IBorrowerService borrowerService;
 
     @Autowired
-    public BorrowerController(BorrowerService borrowerService) {
+    public BorrowerController(IBorrowerService borrowerService) {
         this.borrowerService = borrowerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<BorrowerResponseDTO>> getBorrowers(BorrowerRequestCriteria requestCriteria) {
-        responseUtil.validateRequest(requestCriteria);
+    public ResponseEntity getBorrowers(BorrowerRequestCriteria requestCriteria,
+                                       PageableRequest pageableRequest) {
+        RequestUtil.validate(requestCriteria);
 
-        List<BorrowerResponseDTO> borrowerResponseDTOList = this.borrowerService
+        Page<BorrowerResponseDTO> borrowerResponseDTOList = this.borrowerService
                 .getBorrowers(requestCriteria.id().orElse(null),
                         requestCriteria.name().orElse(null),
-                        requestCriteria.email().orElse(null));
-        return new ResponseEntity<>(borrowerResponseDTOList, HttpStatus.OK);
+                        requestCriteria.email().orElse(null),
+                        PageNumberUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
+                        pageableRequest.pageSize().orElse(10));
+        return ResponseUtil.buildResponseEntity(borrowerResponseDTOList, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<BorrowerResponseDTO> createBorrower(@RequestBody BorrowerRequestBody borrowerRequestBody) {
-        responseUtil.validateRequest(borrowerRequestBody);
+    public ResponseEntity createBorrower(@RequestBody BorrowerRequestBody borrowerRequestBody) {
+        RequestUtil.validate(borrowerRequestBody);
 
-        return new ResponseEntity<>(
+        return ResponseUtil.buildResponseEntity(
                 this.borrowerService.createBorrower(
                         borrowerRequestBody.name(),
                         borrowerRequestBody.email()),

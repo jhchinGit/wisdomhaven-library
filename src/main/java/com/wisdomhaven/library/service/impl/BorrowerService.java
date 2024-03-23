@@ -6,6 +6,10 @@ import com.wisdomhaven.library.model.Borrower;
 import com.wisdomhaven.library.repository.BorrowerRepository;
 import com.wisdomhaven.library.service.IBorrowerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,19 +28,24 @@ public class BorrowerService implements IBorrowerService {
     }
 
     @Override
-    public List<BorrowerResponseDTO> getBorrowers(Integer id, String name, String email) {
-        // TODO: Pagination, sorting, Hateoas
-        List<BorrowerResponseDTO> borrowerResponseDTOList = this.borrowerRepository
-                .findByIdOrNameOrEmail(id, name, email)
-                .stream()
-                .map(BorrowerConverter::ToBorrowerResponseDTO)
-                .toList();
+    public Page<BorrowerResponseDTO> getBorrowers(Integer id,
+                                                  String name,
+                                                  String email,
+                                                  Integer pageNumber,
+                                                  Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        // TODO: sorting, Hateoas
+        Page<Borrower> borrowerPage = this.borrowerRepository.findByIdOrNameOrEmail(id, name, email, pageable);
 
-        if (borrowerResponseDTOList.isEmpty()) {
+        if (borrowerPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
 
-        return borrowerResponseDTOList;
+        List<BorrowerResponseDTO> borrowerResponseDTOList = borrowerPage
+                .map(BorrowerConverter::ToBorrowerResponseDTO)
+                .toList();
+
+        return new PageImpl<>(borrowerResponseDTOList, pageable, borrowerPage.getTotalElements());
     }
 
     @Override

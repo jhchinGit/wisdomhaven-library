@@ -12,8 +12,16 @@ import java.util.List;
 
 public interface BookRepository extends ListCrudRepository<Book, Integer> {
 
-    @Query("""
+    @Query(value = """
             SELECT b
+            FROM Book b
+            WHERE (:bookId IS NULL OR b.id = :bookId) AND
+            (:title IS NULL OR LOWER(b.title) LIKE '%' || LOWER(:title) || '%') AND
+            (:author IS NULL OR LOWER(b.author) LIKE '%' || LOWER(:author) || '%') AND
+            (:isbn IS NULL OR b.isbn = :isbn)
+            """,
+    countQuery = """
+            SELECT count(b)
             FROM Book b
             WHERE (:bookId IS NULL OR b.id = :bookId) AND
             (:title IS NULL OR LOWER(b.title) LIKE '%' || LOWER(:title) || '%') AND

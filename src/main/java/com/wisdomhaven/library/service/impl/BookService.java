@@ -33,21 +33,20 @@ public class BookService implements IBookService {
                                           String title,
                                           String author,
                                           String isbn,
-                                          Integer limit,
-                                          Integer offset) {
-
-        Pageable pageable = PageRequest.of(offset, limit);
+                                          Integer pageNumber,
+                                          Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         // TODO: sorting, Hateoas
-        List<BookResponseDTO> bookResponseDTOList = this.bookRepository
-                .findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn, pageable)
-                .map(BookConverter::ToBookResponseDTO)
-                .stream().toList();
-
-        if (bookResponseDTOList.isEmpty()) {
+        Page<Book> bookPage = this.bookRepository.findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn, pageable);
+        if (bookPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
 
-        return new PageImpl<>(bookResponseDTOList, pageable, bookResponseDTOList.size());
+        List<BookResponseDTO> bookResponseDTOList = bookPage
+                .map(BookConverter::ToBookResponseDTO)
+                .stream().toList();
+
+        return new PageImpl<>(bookResponseDTOList, pageable, bookPage.getTotalElements());
     }
 
     @Override

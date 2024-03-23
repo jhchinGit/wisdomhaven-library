@@ -5,15 +5,15 @@ import com.wisdomhaven.library.dto.request.BookRequestCriteria;
 import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.service.IBookService;
-import com.wisdomhaven.library.util.responseUtil;
+import com.wisdomhaven.library.util.PageNumberUtil;
+import com.wisdomhaven.library.util.RequestUtil;
+import com.wisdomhaven.library.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping(path="books")
@@ -27,32 +27,30 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> getBooks(BookRequestCriteria requestCriteria,
-                                                          PageableRequest pageableRequest) {
-        responseUtil.validateRequest(requestCriteria);
+    public ResponseEntity getBooks(BookRequestCriteria requestCriteria,
+                                   PageableRequest pageableRequest) {
+        RequestUtil.validate(requestCriteria, pageableRequest);
 
         Page<BookResponseDTO> bookResponseDTOList = this.bookService
                 .getBooks(requestCriteria.id().orElse(null),
                         requestCriteria.title().orElse(null),
                         requestCriteria.author().orElse(null),
                         requestCriteria.isbn().orElse(null),
-                        pageableRequest.limit().orElse(null),
-                        pageableRequest.offset().orElse(null));
-        // convert page into list of object
-        return new ResponseEntity<>(bookResponseDTOList.getContent(), HttpStatus.OK);
+                        PageNumberUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
+                        pageableRequest.pageSize().orElse(10));
+        return ResponseUtil.buildResponseEntity(bookResponseDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> getBook(@PathVariable Integer id) {
-        BookResponseDTO bookResponseDTO = this.bookService.getBook(id);
-        return new ResponseEntity<>(bookResponseDTO, HttpStatus.OK);
+    public ResponseEntity getBook(@PathVariable Integer id) {
+        return ResponseUtil.buildResponseEntity(this.bookService.getBook(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookRequestBody bookRequestBody) {
-        responseUtil.validateRequest(bookRequestBody);
+    public ResponseEntity createBook(@RequestBody BookRequestBody bookRequestBody) {
+        RequestUtil.validate(bookRequestBody);
 
-        return new ResponseEntity<>(
+        return ResponseUtil.buildResponseEntity(
                 this.bookService.createBook(
                         bookRequestBody.title(),
                         bookRequestBody.author(),

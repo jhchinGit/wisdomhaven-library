@@ -2,16 +2,23 @@ package com.wisdomhaven.library.util;
 
 import jakarta.validation.*;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-public final class responseUtil {
+public final class RequestUtil {
     private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private static final Validator validator = factory.getValidator();
 
-    private responseUtil() {}
+    private RequestUtil() {}
 
-    public static <T> void validateRequest(T request) {
-        Set<ConstraintViolation<T>> violations = validator.validate(request);
+    public static <T> void validate(T... requests) {
+        Set<ConstraintViolation<T>> violations = new HashSet<>();
+
+        for (T request : requests) {
+            violations.addAll(validator.validate(request));
+        }
+
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
