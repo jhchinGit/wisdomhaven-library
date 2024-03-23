@@ -5,7 +5,7 @@ import com.wisdomhaven.library.dto.request.BorrowerRequestCriteria;
 import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
 import com.wisdomhaven.library.service.IBorrowerService;
-import com.wisdomhaven.library.util.PageNumberUtil;
+import com.wisdomhaven.library.util.PageableUtil;
 import com.wisdomhaven.library.util.RequestUtil;
 import com.wisdomhaven.library.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +29,22 @@ public class BorrowerController {
         this.borrowerService = borrowerService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity getBorrowers(BorrowerRequestCriteria requestCriteria,
                                        PageableRequest pageableRequest) {
-        RequestUtil.validate(requestCriteria);
+        RequestUtil.validate(requestCriteria, pageableRequest);
 
         Page<BorrowerResponseDTO> borrowerResponseDTOList = this.borrowerService
                 .getBorrowers(requestCriteria.id().orElse(null),
                         requestCriteria.name().orElse(null),
                         requestCriteria.email().orElse(null),
-                        PageNumberUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
-                        pageableRequest.pageSize().orElse(10));
+                        PageableUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
+                        pageableRequest.pageSize().orElse(10),
+                        pageableRequest.orderBy().orElse(null));
         return ResponseUtil.buildResponseEntity(borrowerResponseDTOList, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity createBorrower(@RequestBody BorrowerRequestBody borrowerRequestBody) {
         RequestUtil.validate(borrowerRequestBody);
 

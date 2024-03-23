@@ -9,6 +9,6 @@ public record BookRequestBody(
         @NotNull
         String author,
         @NotNull
-        @Pattern(regexp = "^\\d{10}|\\d{13}$", message = "Invalid format")
+        @Pattern(regexp = "^\\d{10}|\\d{13}$", message = "Invalid format.")
         String isbn)
 {}

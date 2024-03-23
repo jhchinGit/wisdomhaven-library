@@ -5,7 +5,7 @@ import com.wisdomhaven.library.dto.request.BookRequestCriteria;
 import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.service.IBookService;
-import com.wisdomhaven.library.util.PageNumberUtil;
+import com.wisdomhaven.library.util.PageableUtil;
 import com.wisdomhaven.library.util.RequestUtil;
 import com.wisdomhaven.library.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity getBooks(BookRequestCriteria requestCriteria,
                                    PageableRequest pageableRequest) {
         RequestUtil.validate(requestCriteria, pageableRequest);
@@ -36,17 +36,18 @@ public class BookController {
                         requestCriteria.title().orElse(null),
                         requestCriteria.author().orElse(null),
                         requestCriteria.isbn().orElse(null),
-                        PageNumberUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
-                        pageableRequest.pageSize().orElse(10));
+                        PageableUtil.getPageNumber(pageableRequest.pageNumber().orElse(null)),
+                        pageableRequest.pageSize().orElse(10),
+                        pageableRequest.orderBy().orElse(null));
         return ResponseUtil.buildResponseEntity(bookResponseDTOList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity getBook(@PathVariable Integer id) {
         return ResponseUtil.buildResponseEntity(this.bookService.getBook(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity createBook(@RequestBody BookRequestBody bookRequestBody) {
         RequestUtil.validate(bookRequestBody);
 

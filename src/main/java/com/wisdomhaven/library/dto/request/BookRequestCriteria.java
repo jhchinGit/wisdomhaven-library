@@ -13,5 +13,5 @@ public record BookRequestCriteria(
         @RequestParam("author")
         Optional<String> author,
         @RequestParam("isbn")
-        Optional<@Pattern(regexp = "^\\d{10}|\\d{13}$", message = "Invalid format") String> isbn
+        Optional<@Pattern(regexp = "^\\d{10}|\\d{13}$", message = "Invalid format.") String> isbn
 ) {}

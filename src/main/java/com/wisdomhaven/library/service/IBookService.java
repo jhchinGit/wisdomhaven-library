@@ -9,7 +9,8 @@ public interface IBookService {
                                    String author,
                                    String isbn,
                                    Integer pageNumber,
-                                   Integer pageSize);
+                                   Integer pageSize,
+                                   String orderBy);
     BookResponseDTO getBook(Integer id);
     BookResponseDTO createBook(String title, String author, String isbn);
 }

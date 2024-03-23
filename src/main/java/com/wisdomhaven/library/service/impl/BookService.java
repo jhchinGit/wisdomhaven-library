@@ -1,27 +1,39 @@
 package com.wisdomhaven.library.service.impl;
 
+import com.wisdomhaven.library.constant.ErrorMessageConstants;
 import com.wisdomhaven.library.converter.BookConverter;
+import com.wisdomhaven.library.dto.misc.Sortable;
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.model.Book;
 import com.wisdomhaven.library.repository.BookRepository;
 import com.wisdomhaven.library.service.IBookService;
+import com.wisdomhaven.library.util.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookService implements IBookService {
     private final BookRepository bookRepository;
+    private static final Map<String, String> bookValidOrderByFieldMap;
+    private static final List<Sort.Order> defaultBookOrderByList = List.of(Sort.Order.asc("title"));
     private static final String BOOK_NOT_FOUND = "The book id %d cannot be found.";
     private static final String UNMATCHED_BOOK_TITLE_OR_AUTHOR =
             "The ISBN %s corresponds to an existing book, but either the title or the author does not match.";
+
+    static {
+        bookValidOrderByFieldMap = new HashMap<>();
+        bookValidOrderByFieldMap.put("title", "title");
+        bookValidOrderByFieldMap.put("author", "author");
+        bookValidOrderByFieldMap.put("isbn", "isbn");
+        bookValidOrderByFieldMap.put("quantity", "quantity");
+    }
 
     @Autowired
     public BookService(BookRepository bookRepository) {
@@ -34,9 +46,14 @@ public class BookService implements IBookService {
                                           String author,
                                           String isbn,
                                           Integer pageNumber,
-                                          Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        // TODO: sorting, Hateoas
+                                          Integer pageSize,
+                                          String orderBy) {
+        Sortable sortable = PageableUtil.getSortable(orderBy, bookValidOrderByFieldMap, defaultBookOrderByList);
+        if (!sortable.isValid() || sortable.sort() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ErrorMessageConstants.INVALID_ORDER_BY);
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortable.sort());
+
         Page<Book> bookPage = this.bookRepository.findByIdOrTitleOrAuthorOrIsbn(id, title, author, isbn, pageable);
         if (bookPage.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);

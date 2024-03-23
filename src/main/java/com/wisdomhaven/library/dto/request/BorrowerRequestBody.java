@@ -7,6 +7,6 @@ public record BorrowerRequestBody(
         @NotNull
         String name,
         @NotNull
-        @Email(message = "Invalid Email format")
+        @Email(message = "Invalid Email format.")
         String email)
 {}

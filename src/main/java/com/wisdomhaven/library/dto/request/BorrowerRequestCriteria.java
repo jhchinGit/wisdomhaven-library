@@ -11,5 +11,5 @@ public record BorrowerRequestCriteria(
         @RequestParam("name")
         Optional<String> name,
         @RequestParam("email")
-        Optional<@Email(message = "Invalid Email format") String> email
+        Optional<@Email(message = "Invalid Email format.") String> email
 ) {}
