@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,19 +37,19 @@ public class BorrowingService implements IBorrowingService {
 
     @Override
     @Transactional
-    public BorrowingResponseDTO createBorrowing(Integer borrowerId, List<String> isbnList) {
-        validationIsbnDuplication(isbnList);
+    public BorrowingResponseDTO createBorrowing(Integer borrowerId, List<Integer> bookIdList) {
+        validationBookDuplication(bookIdList);
 
         Borrower borrower = getBorrower(borrowerId);
-        List<Book> uniqueIsbnBooks = getAvailableBooks(isbnList);
+        List<Book> availableBooks = getAvailableBooks(bookIdList);
 
         Transaction transaction = this.transactionRepository.save(Transaction
                 .builder()
                 .borrower(borrower)
-                .books(uniqueIsbnBooks)
+                .books(availableBooks)
                 .build());
-        uniqueIsbnBooks.forEach(b -> b.setTransaction(transaction));
-        List<Book> borrowedBooks = this.bookRepository.saveAll(uniqueIsbnBooks);
+        availableBooks.forEach(b -> b.setTransaction(transaction));
+        List<Book> borrowedBooks = this.bookRepository.saveAll(availableBooks);
 
         return BorrowingResponseDTO
                 .builder()
@@ -64,30 +62,37 @@ public class BorrowingService implements IBorrowingService {
     }
 
     @Override
-    public void returnBookByIsbn(Integer transactionId, String isbn) {
+    @Transactional
+    public void returnAllBooks(Integer transactionId) {
+        List<Book> books = this.bookRepository.findByTransactionTransactionId(transactionId);
+        var a = "";
+    }
+
+    @Override
+    public void returnBookByBookId(Integer transactionId, Integer bookId) {
         Book book = this.bookRepository
-                .findByTransactionIdAndIsbn(transactionId, isbn)
+                .findByTransactionTransactionIdAndBookId(transactionId, bookId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        String.format("The book with the Isbn %s either cannot be located or has not been borrowed.", isbn)
+                        String.format("The book with the book id %d either cannot be located or has not been borrowed.", bookId)
                 ));
 
         book.setTransaction(null);
         this.bookRepository.save(book);
     }
 
-    private void validationIsbnDuplication(List<String> isbnList) {
-        String duplicateIsbn = isbnList
+    private void validationBookDuplication(List<Integer> bookIdList) {
+        String duplicateBookId = bookIdList
                 .stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .filter(e -> e.getValue() > 1)
-                .map(Map.Entry::getKey)
+                .map(e -> e.getKey().toString())
                 .collect(Collectors.joining(", "));
 
-        if (!duplicateIsbn.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Isbn [%s] is duplicated.", duplicateIsbn));
+        if (!duplicateBookId.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Book id [%s] is duplicated.", duplicateBookId));
         }
     }
 
@@ -99,28 +104,24 @@ public class BorrowingService implements IBorrowingService {
                         String.format("Borrower Id %d not found.", borrowerId)));
     }
 
-    private List<Book> getAvailableBooks(List<String> isbnList) {
-        List<Book> uniqueIsbnBooks = this.bookRepository.findUnborrowedBookByIsbn(isbnList)
+    private List<Book> getAvailableBooks(List<Integer> bookIdList) {
+        List<Book> availableBooks = this.bookRepository.findAvailableBookByBookIds(bookIdList);
+        List<Integer> foundBookIdList = availableBooks
                 .stream()
-                .collect(Collectors.toMap(Book::getIsbn, b -> b, (existing, replacement) -> existing, TreeMap::new))
-                .values()
-                .stream()
+                .map(Book::getBookId)
                 .toList();
-        List<String> foundBookIsbnList = uniqueIsbnBooks
+        String notFoundOrBorrowedBookId = bookIdList
                 .stream()
-                .map(Book::getIsbn)
-                .toList();
-        String notFoundOrBorrowedIsbn = isbnList
-                .stream()
-                .filter(isbn -> !foundBookIsbnList.contains(isbn))
+                .filter(bookId -> !foundBookIdList.contains(bookId))
+                .map(Object::toString)
                 .collect(Collectors.joining(", "));
 
-        if (!notFoundOrBorrowedIsbn.isEmpty()) {
+        if (!notFoundOrBorrowedBookId.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    String.format("Isbn [%s] is not found or not available.", notFoundOrBorrowedIsbn));
+                    String.format("Book id [%s] is not found or not available.", notFoundOrBorrowedBookId));
         }
 
-        return uniqueIsbnBooks;
+        return availableBooks;
     }
 }

@@ -37,20 +37,15 @@ public interface BookRepository extends ListCrudRepository<Book, Integer> {
 
     List<Book> findByIsbn(String isbn);
 
-    @Query("""
-            SELECT b
-            FROM Book b
-            WHERE b.isbn IN :isbnList AND
-            b.transaction IS NULL
-            """)
-    List<Book> findUnborrowedBookByIsbn(@Param("isbnList") List<String> isbnList);
+    List<Book> findByTransactionTransactionId(Integer transactionId);
 
     @Query("""
             SELECT b
             FROM Book b
-            WHERE b.transaction.transactionId = :transactionId AND
-            b.isbn = :isbn
+            WHERE b.bookId IN :bookIdList AND
+            b.transaction IS NULL
             """)
-    Optional<Book> findByTransactionIdAndIsbn(@Param("transactionId") Integer transactionId,
-                                              @Param("isbn") String isbn);
+    List<Book> findAvailableBookByBookIds(@Param("bookIdList") List<Integer> bookIdList);
+
+    Optional<Book> findByTransactionTransactionIdAndBookId(Integer transactionId, Integer bookId);
 }
