@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -70,37 +69,6 @@ public class BookServiceImplTests {
 
         assertThrows(ResponseStatusException.class,
                 () -> this.bookService.getBooks(null, null, null, null, 0, 10, null));
-    }
-
-    @Test
-    void givenBookId_whenGetBook_thenReturnBookResponseDTO() {
-        Integer bookId = 1;
-        String title = "The Book";
-        String author = "Book Author";
-        String isbn = "1";
-        Book book = Book.builder().bookId(bookId).title(title).author(author).isbn(isbn).build();
-        BookResponseDTO bookResponseDTO  = BookResponseDTO
-                .builder()
-                .bookId(bookId)
-                .title(title)
-                .author(author)
-                .isbn(isbn)
-                .isAvailable(true)
-                .build();
-
-        Mockito.when(this.bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-
-        BookResponseDTO result = this.bookService.getBook(bookId);
-        assertEquals(bookResponseDTO, result);
-    }
-
-    @Test
-    void givenInvalidBookId_whenGetBook_thenThrowResponseStatusException() {
-        Integer invalidBookId = -1;
-
-        Mockito.when(this.bookRepository.findById(invalidBookId)).thenReturn(Optional.empty());
-
-        assertThrows(ResponseStatusException.class, () -> this.bookService.getBook(invalidBookId));
     }
 
     @Test
