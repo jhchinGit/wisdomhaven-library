@@ -66,16 +66,6 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public BookResponseDTO getBook(Integer bookId) {
-        return this.bookRepository
-                .findById(bookId)
-                .map(BookConverter::ToBookResponseDTO)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        String.format(BOOK_NOT_FOUND, bookId)));
-    }
-
-    @Override
     public BookResponseDTO createBook(String title, String author, String isbn) {
         List<Book> existingBooks = this.bookRepository.findByIsbn(isbn);
         validateBookCreation(existingBooks, title, author, isbn);

@@ -77,28 +77,6 @@ public class BookControllerTests {
     }
 
     @Test
-    void givenBookId_whenGetBook_thenStatus200() {
-        BookResponseDTO bookResponseDTO  = BookResponseDTO
-                .builder()
-                .bookId(1)
-                .title("The Book")
-                .author("Book Author")
-                .isbn("1")
-                .isAvailable(true)
-                .build();
-
-        Mockito.when(this.bookService.getBook(1)).thenReturn(bookResponseDTO);
-
-        ResponseEntity<BookResponseDTO> result = this.bookController.getBook(1);
-        assertEquals(result.getStatusCode().value(), HttpStatus.OK.value());
-        assertEquals(bookResponseDTO.bookId(), Objects.requireNonNull(result.getBody()).bookId());
-        assertEquals(bookResponseDTO.title(), Objects.requireNonNull(result.getBody()).title());
-        assertEquals(bookResponseDTO.author(), Objects.requireNonNull(result.getBody()).author());
-        assertEquals(bookResponseDTO.isbn(), Objects.requireNonNull(result.getBody()).isbn());
-        assertEquals(bookResponseDTO.isAvailable(), Objects.requireNonNull(result.getBody()).isAvailable());
-    }
-
-    @Test
     void givenBookRequestBody_whenCreateBook_thenStatus201() {
         String title = "The Book";
         String author = "Book Author";
