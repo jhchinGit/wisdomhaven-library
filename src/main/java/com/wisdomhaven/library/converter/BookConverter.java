@@ -12,6 +12,7 @@ public class BookConverter {
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .isbn(book.getIsbn())
+                .isAvailable(book.getTransaction() == null)
                 .build();
     }
 }
