@@ -13,7 +13,6 @@ public record PageableRequest(
         @RequestParam("pageSize")
         Optional<Integer> pageSize,
         @RequestParam("orderBy")
-        // TODO: understand this regex
         Optional<@Pattern(
                 regexp = "[a-zA-Z\\d]+:(?i)(asc|desc)(?:,[a-zA-Z\\d]+:(?i)(asc|desc))*",
                 message = ErrorMessageConstants.INVALID_ORDER_BY) String> orderBy

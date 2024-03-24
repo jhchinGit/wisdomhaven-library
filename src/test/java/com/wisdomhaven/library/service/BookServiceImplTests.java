@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BookServiceImplTests {
+class BookServiceImplTests {
     @Mock
     private BookRepository bookRepository;
     @InjectMocks

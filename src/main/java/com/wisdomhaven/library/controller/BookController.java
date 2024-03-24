@@ -53,6 +53,4 @@ public class BookController {
                         bookRequestBody.isbn()),
                 HttpStatus.CREATED);
     }
-
-    // TODO: PUT AND DELETE
 }

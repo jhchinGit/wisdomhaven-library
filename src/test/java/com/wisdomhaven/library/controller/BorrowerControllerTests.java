@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BorrowerControllerTests {
+class BorrowerControllerTests {
     @Mock
     private IBorrowerService borrowerService;
     @InjectMocks

@@ -23,7 +23,6 @@ public class BookService implements IBookService {
     private final BookRepository bookRepository;
     private static final Map<String, String> bookValidOrderByFieldMap;
     private static final List<Sort.Order> defaultBookOrderByList = List.of(Sort.Order.asc("title"));
-    private static final String BOOK_NOT_FOUND = "The book id %d cannot be found.";
     private static final String UNMATCHED_BOOK_TITLE_OR_AUTHOR =
             "The ISBN %s corresponds to an existing book, but either the title or the author does not match.";
 

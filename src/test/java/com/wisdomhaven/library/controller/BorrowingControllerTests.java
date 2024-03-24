@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BorrowingControllerTests {
+class BorrowingControllerTests {
     @Mock
     private IBorrowingService borrowingService;
     @InjectMocks

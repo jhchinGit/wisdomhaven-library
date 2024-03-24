@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class BookControllerTests {
+class BookControllerTests {
     @Mock
     private IBookService bookService;
     @InjectMocks

@@ -38,32 +38,10 @@ public class BorrowingService implements IBorrowingService {
     @Override
     @Transactional
     public BorrowingResponseDTO createBorrowing(Integer borrowerId, List<Integer> bookIdList) {
-        validationBookDuplication(bookIdList);
-
+        validateBookIdListDuplication(bookIdList);
         Borrower borrower = getBorrower(borrowerId);
         List<Book> availableBooks = getAvailableBooks(bookIdList);
-        List<String> availableBookIsbnList = availableBooks
-                .stream()
-                .map(Book::getIsbn)
-                .toList();
-
-        Set<String> sameIsbnBorrowedBookTitle = new TreeSet<>();
-        borrower.getTransactionList()
-                .stream()
-                .filter(t -> !t.isFullyReturn())
-                .forEach(t -> sameIsbnBorrowedBookTitle.addAll(t.getBooks()
-                        .stream()
-                        .filter(b -> availableBookIsbnList.contains(b.getIsbn()))
-                        .map(Book::getTitle)
-                        .toList()));
-
-        if (!sameIsbnBorrowedBookTitle.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    String.format("Borrower with id %d has borrowed book with book title [%s].",
-                            borrowerId,
-                            String.join(", ", sameIsbnBorrowedBookTitle)));
-        }
+        validateRedundantBookBorrowing(borrowerId, availableBooks, borrower);
 
         Transaction transaction = this.transactionRepository.save(Transaction
                 .builder()
@@ -124,7 +102,7 @@ public class BorrowingService implements IBorrowingService {
         return String.format("Book id %d is returned.", bookId);
     }
 
-    private void validationBookDuplication(List<Integer> bookIdList) {
+    private static void validateBookIdListDuplication(List<Integer> bookIdList) {
         String duplicateBookId = bookIdList
                 .stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
@@ -166,5 +144,32 @@ public class BorrowingService implements IBorrowingService {
         }
 
         return availableBooks;
+    }
+
+    private static void validateRedundantBookBorrowing(Integer borrowerId,
+                                                       List<Book> availableBooks,
+                                                       Borrower borrower) {
+        List<String> availableBookIsbnList = availableBooks
+                .stream()
+                .map(Book::getIsbn)
+                .toList();
+
+        Set<String> sameIsbnBorrowedBookTitle = new TreeSet<>();
+        borrower.getTransactionList()
+                .stream()
+                .filter(t -> !t.isFullyReturn())
+                .forEach(t -> sameIsbnBorrowedBookTitle.addAll(t.getBooks()
+                        .stream()
+                        .filter(b -> availableBookIsbnList.contains(b.getIsbn()))
+                        .map(Book::getTitle)
+                        .toList()));
+
+        if (!sameIsbnBorrowedBookTitle.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("Borrower with id %d has borrowed book with book title [%s].",
+                            borrowerId,
+                            String.join(", ", sameIsbnBorrowedBookTitle)));
+        }
     }
 }
