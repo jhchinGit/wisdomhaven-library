@@ -1,7 +1,6 @@
 package com.wisdomhaven.library.controller;
 
 import com.wisdomhaven.library.dto.request.*;
-import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
 import com.wisdomhaven.library.dto.response.PageResponseDTO;
 import com.wisdomhaven.library.service.IBorrowerService;
