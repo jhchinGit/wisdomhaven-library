@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,6 +42,28 @@ public class BorrowingService implements IBorrowingService {
 
         Borrower borrower = getBorrower(borrowerId);
         List<Book> availableBooks = getAvailableBooks(bookIdList);
+        List<String> availableBookIsbnList = availableBooks
+                .stream()
+                .map(Book::getIsbn)
+                .toList();
+
+        Set<String> sameIsbnBorrowedBookTitle = new TreeSet<>();
+        borrower.getTransactionList()
+                .stream()
+                .filter(t -> !t.isFullyReturn())
+                .forEach(t -> sameIsbnBorrowedBookTitle.addAll(t.getBooks()
+                        .stream()
+                        .filter(b -> availableBookIsbnList.contains(b.getIsbn()))
+                        .map(Book::getTitle)
+                        .toList()));
+
+        if (!sameIsbnBorrowedBookTitle.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("Borrower with id %d has borrowed book with book title [%s].",
+                            borrowerId,
+                            String.join(", ", sameIsbnBorrowedBookTitle)));
+        }
 
         Transaction transaction = this.transactionRepository.save(Transaction
                 .builder()
@@ -99,7 +121,7 @@ public class BorrowingService implements IBorrowingService {
 
         book.setTransaction(null);
         this.bookRepository.save(book);
-        return String.format("Book %d is returned.", bookId);
+        return String.format("Book id %d is returned.", bookId);
     }
 
     private void validationBookDuplication(List<Integer> bookIdList) {
