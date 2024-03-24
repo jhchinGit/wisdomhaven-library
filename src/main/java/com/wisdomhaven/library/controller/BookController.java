@@ -43,7 +43,7 @@ public class BookController {
     }
 
     @GetMapping(path = "/{bookId}", produces = "application/json")
-    public ResponseEntity getBook(@PathVariable Integer bookId) {
+    public ResponseEntity getBook(@PathVariable("bookId") Integer bookId) {
         return ResponseUtil.buildResponseEntity(this.bookService.getBook(bookId), HttpStatus.OK);
     }
 

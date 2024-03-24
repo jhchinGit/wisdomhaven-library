@@ -1,6 +1,7 @@
 package com.wisdomhaven.library.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
     private int transactionId;
+
+    @Column(name = "is_fully_return")
+    @NotNull
+    private boolean isFullyReturn;
 
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private List<Book> books;

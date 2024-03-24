@@ -47,6 +47,7 @@ public class BorrowingService implements IBorrowingService {
                 .builder()
                 .borrower(borrower)
                 .books(availableBooks)
+                .isFullyReturn(false)
                 .build());
         availableBooks.forEach(b -> b.setTransaction(transaction));
         List<Book> borrowedBooks = this.bookRepository.saveAll(availableBooks);
@@ -63,13 +64,32 @@ public class BorrowingService implements IBorrowingService {
 
     @Override
     @Transactional
-    public void returnAllBooks(Integer transactionId) {
+    public String returnAllBooks(Integer transactionId) {
+        Transaction transaction = this.transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Transaction %d not found.", transactionId)
+                ));
+
+        if (transaction.isFullyReturn()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No book remains unreturned."
+            );
+        }
+
         List<Book> books = this.bookRepository.findByTransactionTransactionId(transactionId);
-        var a = "";
+        books.forEach(b -> b.setTransaction(null));
+        this.bookRepository.saveAll(books);
+
+        transaction.setFullyReturn(true);
+        this.transactionRepository.save(transaction);
+
+        return "All books have been returned.";
     }
 
     @Override
-    public void returnBookByBookId(Integer transactionId, Integer bookId) {
+    public String returnBookByBookId(Integer transactionId, Integer bookId) {
         Book book = this.bookRepository
                 .findByTransactionTransactionIdAndBookId(transactionId, bookId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -79,6 +99,7 @@ public class BorrowingService implements IBorrowingService {
 
         book.setTransaction(null);
         this.bookRepository.save(book);
+        return String.format("Book %d is returned.", bookId);
     }
 
     private void validationBookDuplication(List<Integer> bookIdList) {
