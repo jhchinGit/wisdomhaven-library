@@ -1,0 +1,622 @@
+openapi: 3.0.3
+info:
+  title: Wisdom Haven Library APIs
+  description: |-
+    This is an OpenAPI 3.0 specification about Wisdom Haven Library APIs
+  contact:
+    email: jinhoongchin@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: book
+    description: |-
+      Retrieve a list of books or add a new book.
+  - name: borrower
+    description: Retrieve a list of borrowers or register a new borrower
+  - name: borrowing
+    description: Borrow or return book
+paths:
+  /books:
+    get:
+      tags:
+        - book
+      summary: Find all the books
+      description: Multiple status values can be provided to find all or partiacially book(s).
+      operationId: findBooks
+      parameters:
+        - name: bookId
+          in: query
+          description: Id of the book.
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: title
+          in: query
+          description: The book's title will be used as the basis for wildcard filtering by the API.
+          required: false
+          schema:
+            type: string
+            example: "How to Run"
+        - name: author
+          in: query
+          description: The book's author will be used as the basis for wildcard filtering by the API.
+          required: false
+          schema:
+            type: string
+            example: "Jin Hoong Chin"
+        - name: isbn
+          in: query
+          description: The book's ISBN (International Standard Book Number) will be used for filtering by the API.
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{10}|\d{13}$'
+            example: '1234567890'
+        - name: pageNumber
+          in: query
+          description: The page number of the book list with 1 as minimum value.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+        - name: pageSize
+          in: query
+          description: The total limit number of book on each page.
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: orderBy
+          in: query
+          description: The fields of the books for sorting.
+          required: false
+          schema:
+            type: string
+            example: title:asc,author:asc,isbn:asc
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: The total number of records on each page.
+                    example: 10
+                  count:
+                    type: integer
+                    format: int64
+                    description: The total number of records on current page.
+                    example: 1
+                  pageNumber:
+                    type: integer
+                    format: int64
+                    description: The page number of current page
+                    example: 1
+                  pageSize:
+                    type: integer
+                    format: int64
+                    description: The total limit number of records on each page.
+                    example: 1
+                  hasMore:
+                    type: boolean
+                    description: Does the next page exist.
+                    example: true
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookResponse'
+        '204':
+          description: No data
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: "The ordering provided is invalid. The correct format should be: [field1]:[asc/desc], [field2]:[asc/desc]."
+    post:
+      tags:
+        - book
+      summary: Add a new book to the library
+      description: Add a new book to the library
+      operationId: addBook
+      requestBody:
+        description: Create a new book in the library
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: "The ISBN 1234567890 corresponds to an existing book, but either the title or the author does not match."
+  /borrowers:
+    get:
+      tags:
+        - borrower
+      summary: Find all the borrowers
+      description: Multiple status values can be provided to find all or partiacially borrower(s).
+      operationId: findBorrowers
+      parameters:
+        - name: borrowerId
+          in: query
+          description: Id of the book.
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: name
+          in: query
+          description: The borrower's name will be used as the basis for wildcard filtering by the API.
+          required: false
+          schema:
+            type: string
+            example: "Jin Hoong Chin"
+        - name: email
+          in: query
+          description: The borrower's email will be used as the basis for wildcard filtering by the API.
+          required: false
+          schema:
+            type: string
+            example: "jinhoongchin@gmail.com"
+        - name: pageNumber
+          in: query
+          description: The page number of the borrower list with 1 as minimum value.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+        - name: pageSize
+          in: query
+          description: The total limit number of borrowers on each page.
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: orderBy
+          in: query
+          description: The fields of the borrowers for sorting.
+          required: false
+          schema:
+            type: string
+            example: name:asc,email:asc
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: The total number of records on each page.
+                    example: 10
+                  count:
+                    type: integer
+                    format: int64
+                    description: The total number of records on current page.
+                    example: 1
+                  pageNumber:
+                    type: integer
+                    format: int64
+                    description: The page number of current page
+                    example: 1
+                  pageSize:
+                    type: integer
+                    format: int64
+                    description: The total limit number of records on each page.
+                    example: 1
+                  hasMore:
+                    type: boolean
+                    description: Does the next page exist.
+                    example: true
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BorrowerResponse'
+        '204':
+          description: No data
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: "The ordering provided is invalid. The correct format should be: [field1]:[asc/desc], [field2]:[asc/desc]."
+    post:
+      tags:
+        - borrower
+      summary: Register a new borrower to the library
+      description: Register a new borrower to the library
+      operationId: addBorrower
+      requestBody:
+        description: Create a new borrower in the library
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BorrowerRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowerResponse'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: "Borrower email jinhoongchin@gmail.com is used."
+  /borrowings:
+    post:
+      tags:
+        - borrowing
+      summary: Borrow book(s) from library
+      description: A borrower is borrowing book(s) from Wisdom Haven Library
+      operationId: addBorrowing
+      requestBody:
+        description: Create a new borrowing of books in the library
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BorrowingRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowingResponse'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: Book id [1] is duplicated.
+        '404':
+          description: Something not found status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 404
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: Borrower Id 1 not found.
+  /borrowings/{transactionId}:
+    delete:
+      tags:
+        - borrowing
+      summary: Return all the books that belongs to a borrowing transaction
+      description: Return all the books that belongs to a borrowing transaction
+      operationId: deleteBorrowingTransaction
+      parameters:
+        - name: transactionId
+          in: path
+          description: Borrowing transaction id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: All books have been returned.
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 400
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: No book remains unreturned.
+        '404':
+          description: Something not found status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 404
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: Transaction 1 not found.
+  /borrowings/{transactionId}/books/{bookId}:
+    delete:
+      tags:
+        - borrowing
+      summary: Return specific book that belongs to a borrowing transaction
+      description: Return specific book that belongs to a borrowing transaction
+      operationId: deleteOneBookFromBorrowingTransaction
+      parameters:
+        - name: transactionId
+          in: path
+          description: Borrowing transaction id
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: bookId
+          in: path
+          description: Id of the book.
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Book id 1 is returned.
+        '404':
+          description: Something not found status value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the status code.
+                    example: Bad Request
+                  statusCode:
+                    type: integer
+                    description: The status code.
+                    example: 404
+                  message:
+                    type: string
+                    description: The message of the status.
+                    example: The book with the book id 1 either cannot be located or has not been borrowed.
+components:
+  schemas:
+    BookResponse:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+          description: The id of the book.
+          example: 1
+        title:
+          type: string
+          description: The title of the book.
+          example: "How to Run"
+        author:
+          type: string
+          description: The author of the book.
+          example: "Jin Hoong Chin"
+        isbn:
+          type: string
+          description: The ISBN (International Standard Book Number) of the book.
+          example: '1234567890'
+        isAvailable:
+          type: boolean
+          description: The availability of the book.
+          example: true
+    BookRequest:
+      type: object
+      required:
+        - title
+        - author
+        - isbn
+      properties:
+        title:
+          type: string
+          nullable: false
+          description: The title of the book.
+          example: "How to Run"
+        author:
+          type: string
+          nullable: false
+          description: The author of the book.
+          example: "Jin Hoong Chin"
+        isbn:
+          type: string
+          nullable: false
+          description: The ISBN (International Standard Book Number) of the book.
+          example: '1234567890'
+    BorrowerResponse:
+      type: object
+      properties:
+        borrowerId:
+          type: integer
+          format: int64
+          description: The id of the borrower.
+          example: 1
+        name:
+          type: string
+          description: The name of the borrower.
+          example: "Jin Hoong Chin"
+        email:
+          type: string
+          description: The email of the borrower.
+          example: "jinhoongchin@gmail.com"
+    BorrowerRequest:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: The name of the borrower.
+          example: "Jin Hoong Chin"
+        email:
+          type: string
+          nullable: false
+          description: The email of the borrower.
+          example: 'jinhoongchin@gmail.com'
+    BorrowingRequest:
+      type: object
+      required:
+        - borrowerId
+        - bookIdList
+      properties:
+        borrowerId:
+          type: integer
+          nullable: false
+          format: int64
+          description: The id of the borrower.
+          example: 1
+        bookIdList:
+          type: array
+          nullable: false
+          description: The list of book Ids to be borrowed.
+          items:
+            type: integer
+            example: 1
+    BorrowedBookResponse:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+          description: The id of the book.
+          example: 1
+        title:
+          type: string
+          description: The title of the book.
+          example: "How to Run"
+        author:
+          type: string
+          description: The author of the book.
+          example: "Jin Hoong Chin"
+        isbn:
+          type: string
+          description: The ISBN (International Standard Book Number) of the book.
+          example: '1234567890'
+    BorrowingResponse:
+      type: object
+      properties:
+        transactionId:
+          type: integer
+          format: int64
+          description: The id of the borrowing transaction.
+          example: 1
+        bookResponseDTOList:
+          type: array
+          description: The borrowed books.
+          items:
+            $ref: '#/components/schemas/BorrowedBookResponse'
