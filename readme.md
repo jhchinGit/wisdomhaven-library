@@ -13,13 +13,16 @@
    - Refer to the [Installing Apache Maven](https://maven.apache.org/install.html) for detailed installation instructions.
 
 **How to run the application**
-1. Create a configuration file for the application:
-   - Use the provided template file "application.properties.template" located in the same directory as this file.
+
+1. Unzip the SourceCode.zip.
+2. Create a configuration file for the application:
+   - Use the provided template file "application.properties.template" located in the SourceCode folder.
    - Rename the file "application.properties.template" to "application.properties".
-2. Open the command prompt and navigate to the current directory of this file.
-3. Execute the following command: `mvn spring-boot:run -Dserver.port=8080 -Dspring.config.location=application.properties -DskipTests`
+   - Move the file into SourceCode folder.
+3. Open the command prompt and navigate to the SourceCode folder
+4. Execute the following command: `mvn spring-boot:run -Dserver.port=8080 -Dspring.config.location=application.properties -DskipTests`
    - You can customize the port as needed.
-4. Once the service has started, it is ready to be used.
+5. Once the service has started, it is ready to be used.
 
 **API Specification**
 
