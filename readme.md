@@ -1,4 +1,4 @@
-###Prerequisites
+**Prerequisites**
 
 1. Make sure MySQL is installed.
    - You can download the installer from [MySQL Installer](https://dev.mysql.com/downloads/installer/)
@@ -12,7 +12,7 @@
    - Download the Installer from [Apache Maven](https://maven.apache.org/download.cgi)
    - Refer to the [Installing Apache Maven](https://maven.apache.org/install.html) for detailed installation instructions.
 
-###How to run the application
+**How to run the application**
 1. Create a configuration file for the application:
    - Use the provided template file "application.properties.template" located in the same directory as this file.
    - Rename the file "application.properties.template" to "application.properties".
@@ -21,11 +21,11 @@
    - You can customize the port as needed.
 4. Once the service has started, it is ready to be used.
 
-###API Specification
+**API Specification**
 
 1. Visit [Swagger Editor](https://editor.swagger.io).
 2. Click on File -> Import file -> Choose "openapi.yaml" from the same directory as this file -> Click Open.
 3. The API specification will be displayed on the right-hand side.
 
-###Self-assumptions entail requirements not explicitly stated in the assessment
+**Self-assumptions entail requirements not explicitly stated in the assessment**
 1. A borrower is unable to borrow the same book more than once, under any circumstances.
