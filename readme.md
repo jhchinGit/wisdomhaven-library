@@ -29,6 +29,3 @@
 1. Visit [Swagger Editor](https://editor.swagger.io).
 2. Click on File -> Import file -> Choose "openapi.yaml" from the same directory as this file -> Click Open.
 3. The API specification will be displayed on the right-hand side.
-
-**Self-assumptions entail requirements not explicitly stated in the assessment**
-1. A borrower is unable to borrow the same book more than once, under any circumstances.
