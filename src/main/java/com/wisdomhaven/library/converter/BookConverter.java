@@ -5,14 +5,15 @@ import com.wisdomhaven.library.model.Book;
 
 public class BookConverter {
     private BookConverter() {}
-    public static BookResponseDTO ToBookResponseDTO(Book book) {
+    public static BookResponseDTO toBookResponseDTO(Book book) {
         return BookResponseDTO
                 .builder()
                 .bookId(book.getBookId())
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .isbn(book.getIsbn())
-                .isAvailable(book.getTransaction() == null)
+                // TODO: Create transaction service to check availability
+                .isAvailable(true)
                 .build();
     }
 }

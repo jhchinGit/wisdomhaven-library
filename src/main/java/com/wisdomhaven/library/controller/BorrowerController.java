@@ -13,10 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(path = "borrowers")
@@ -42,6 +39,11 @@ public class BorrowerController {
                         pageableRequest.pageSize().orElse(10),
                         pageableRequest.orderBy().orElse(null));
         return ResponseUtil.buildResponseEntity(borrowerResponseDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{borrowerId}", produces = "application/json")
+    public ResponseEntity getBorrower(@PathVariable("borrowerId") Integer borrowerId) {
+        return ResponseUtil.buildResponseEntity(this.borrowerService.getBorrower(borrowerId), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")

@@ -5,4 +5,8 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record BorrowingResponseDTO(Integer transactionId, List<BookResponseDTO> bookResponseDTOList) {}
+public record BorrowingResponseDTO(
+        Integer borrowingId,
+        Integer borrowerId,
+        String borrowerName,
+        List<BorrowingDetailResponseDTO> details) {}

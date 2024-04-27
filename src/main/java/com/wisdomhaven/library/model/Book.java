@@ -36,10 +36,6 @@ public class Book {
     @NotNull
     private String isbn;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "transactionId")
-    private Transaction transaction;
-
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)
     private Instant createdDate;
