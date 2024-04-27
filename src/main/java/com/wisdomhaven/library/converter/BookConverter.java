@@ -12,7 +12,8 @@ public class BookConverter {
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .isbn(book.getIsbn())
-                .isAvailable(book.getTransaction() == null)
+                // TODO: Create transaction service to check availability
+                .isAvailable(true)
                 .build();
     }
 }
