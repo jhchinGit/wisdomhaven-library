@@ -57,7 +57,7 @@ public class BorrowingService implements IBorrowingService {
                 .transactionId(transaction.getTransactionId())
                 .bookResponseDTOList(borrowedBooks
                         .stream()
-                        .map(BookConverter::ToBookResponseDTO)
+                        .map(BookConverter::toBookResponseDTO)
                         .toList())
                 .build();
     }

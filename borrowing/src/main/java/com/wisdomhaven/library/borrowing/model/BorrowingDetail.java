@@ -11,30 +11,34 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.List;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "borrowing_detail")
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class BorrowingDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
-    private int transactionId;
+    @Column(name = "borrowing_detail_id")
+    private Integer borrowingDetailId;
 
-    @Column(name = "is_fully_return")
+    @Column(name = "book_id")
     @NotNull
-    private boolean isFullyReturn;
+    private Integer bookId;
 
-//    @OneToMany(mappedBy = "transaction", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-//    private List<Book> books;
+    @Column(name = "title")
+    @NotNull
+    private String title;
 
-//    @ManyToOne(cascade = CascadeType.REFRESH)
-//    @JoinColumn(name = "borrowerId")
-//    private Borrower borrower;
+    @Column(name = "isbn")
+    @NotNull
+    private String isbn;
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "borrowingId")
+    private Borrowing borrowing;
 
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)

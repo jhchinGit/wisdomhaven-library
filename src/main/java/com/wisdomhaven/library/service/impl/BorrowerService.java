@@ -55,7 +55,7 @@ public class BorrowerService implements IBorrowerService {
         }
 
         List<BorrowerResponseDTO> borrowerResponseDTOList = borrowerPage
-                .map(BorrowerConverter::ToBorrowerResponseDTO)
+                .map(BorrowerConverter::toBorrowerResponseDTO)
                 .toList();
 
         return new PageImpl<>(borrowerResponseDTOList, pageable, borrowerPage.getTotalElements());
@@ -69,7 +69,7 @@ public class BorrowerService implements IBorrowerService {
                     String.format("Borrower email %s is used.", email));
         }
 
-        return BorrowerConverter.ToBorrowerResponseDTO(
+        return BorrowerConverter.toBorrowerResponseDTO(
                 this.borrowerRepository.save(
                         Borrower.builder()
                                 .name(name)
