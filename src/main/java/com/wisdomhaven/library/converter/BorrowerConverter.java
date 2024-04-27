@@ -5,7 +5,7 @@ import com.wisdomhaven.library.model.Borrower;
 
 public class BorrowerConverter {
     private BorrowerConverter() {}
-    public static BorrowerResponseDTO ToBorrowerResponseDTO(Borrower borrower) {
+    public static BorrowerResponseDTO toBorrowerResponseDTO(Borrower borrower) {
         return BorrowerResponseDTO
                 .builder()
                 .borrowerId(borrower.getBorrowerId())

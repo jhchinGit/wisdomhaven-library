@@ -55,10 +55,18 @@ public class BorrowerService implements IBorrowerService {
         }
 
         List<BorrowerResponseDTO> borrowerResponseDTOList = borrowerPage
-                .map(BorrowerConverter::ToBorrowerResponseDTO)
+                .map(BorrowerConverter::toBorrowerResponseDTO)
                 .toList();
 
         return new PageImpl<>(borrowerResponseDTOList, pageable, borrowerPage.getTotalElements());
+    }
+
+    @Override
+    public BorrowerResponseDTO getBorrower(Integer borrowerId) {
+        return this.borrowerRepository.findById(borrowerId)
+                .map(BorrowerConverter::toBorrowerResponseDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        String.format("Borrower id %d not found.", borrowerId)));
     }
 
     @Override
@@ -69,7 +77,7 @@ public class BorrowerService implements IBorrowerService {
                     String.format("Borrower email %s is used.", email));
         }
 
-        return BorrowerConverter.ToBorrowerResponseDTO(
+        return BorrowerConverter.toBorrowerResponseDTO(
                 this.borrowerRepository.save(
                         Borrower.builder()
                                 .name(name)

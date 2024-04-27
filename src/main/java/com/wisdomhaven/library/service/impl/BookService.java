@@ -58,10 +58,18 @@ public class BookService implements IBookService {
         }
 
         List<BookResponseDTO> bookResponseDTOList = bookPage
-                .map(BookConverter::ToBookResponseDTO)
+                .map(BookConverter::toBookResponseDTO)
                 .stream().toList();
 
         return new PageImpl<>(bookResponseDTOList, pageable, bookPage.getTotalElements());
+    }
+
+    @Override
+    public BookResponseDTO getBook(Integer bookId) {
+        return this.bookRepository.findById(bookId)
+                .map(BookConverter::toBookResponseDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        String.format("Book id %d not found.", bookId)));
     }
 
     @Override
@@ -69,7 +77,7 @@ public class BookService implements IBookService {
         List<Book> existingBooks = this.bookRepository.findByIsbn(isbn);
         validateBookCreation(existingBooks, title, author, isbn);
 
-        return BookConverter.ToBookResponseDTO(
+        return BookConverter.toBookResponseDTO(
                 this.bookRepository.save(
                                 Book.builder()
                                         .title(title)

@@ -10,5 +10,7 @@ public interface IBorrowerService {
                                            Integer pageNumber,
                                            Integer pageSize,
                                            String orderBy);
+
+    BorrowerResponseDTO getBorrower(Integer borrowerId);
     BorrowerResponseDTO createBorrower(String name, String email);
 }

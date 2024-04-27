@@ -42,6 +42,11 @@ public class BookController {
         return ResponseUtil.buildResponseEntity(bookResponseDTOList, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/{bookId}", produces = "application/json")
+    public ResponseEntity getBook(@PathVariable("bookId") Integer bookId) {
+        return ResponseUtil.buildResponseEntity(this.bookService.getBook(bookId), HttpStatus.OK);
+    }
+
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity createBook(@RequestBody BookRequestBody bookRequestBody) {
         RequestUtil.validate(bookRequestBody);

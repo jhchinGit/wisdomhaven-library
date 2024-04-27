@@ -36,16 +36,4 @@ public interface BookRepository extends ListCrudRepository<Book, Integer> {
                                                  Pageable pageable);
 
     List<Book> findByIsbn(String isbn);
-
-    List<Book> findByTransactionTransactionId(Integer transactionId);
-
-    @Query("""
-            SELECT b
-            FROM Book b
-            WHERE b.bookId IN :bookIdList AND
-            b.transaction IS NULL
-            """)
-    List<Book> findAvailableBookByBookIds(@Param("bookIdList") List<Integer> bookIdList);
-
-    Optional<Book> findByTransactionTransactionIdAndBookId(Integer transactionId, Integer bookId);
 }

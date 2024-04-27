@@ -33,9 +33,6 @@ public class Borrower {
     @NotNull
     private String email;
 
-    @OneToMany(mappedBy = "borrower", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    private List<Transaction> transactionList;
-
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)
     private Instant createdDate;
