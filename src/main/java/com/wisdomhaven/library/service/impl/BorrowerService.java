@@ -62,6 +62,14 @@ public class BorrowerService implements IBorrowerService {
     }
 
     @Override
+    public BorrowerResponseDTO getBorrower(Integer borrowerId) {
+        return this.borrowerRepository.findById(borrowerId)
+                .map(BorrowerConverter::toBorrowerResponseDTO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        String.format("Borrower id %d not found.", borrowerId)));
+    }
+
+    @Override
     public BorrowerResponseDTO createBorrower(String name, String email) {
         if (this.borrowerRepository.existsByEmailIgnoreCase(email)) {
             throw new ResponseStatusException(

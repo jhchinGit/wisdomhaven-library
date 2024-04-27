@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name="bookClient", url = "localhost:8090/books")
-public interface BookClient {
+public interface IBookClient {
     @RequestMapping(method = RequestMethod.GET, value = "/{bookId}", produces = "application/json")
     ResponseEntity<Book> getBook(@PathVariable("bookId") Integer bookId);
 }

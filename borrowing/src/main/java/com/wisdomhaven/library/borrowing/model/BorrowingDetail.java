@@ -36,6 +36,10 @@ public class BorrowingDetail {
     @NotNull
     private String isbn;
 
+    @Column(name = "is_return")
+    @NotNull
+    private boolean isReturn;
+
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "borrowingId")
     private Borrowing borrowing;

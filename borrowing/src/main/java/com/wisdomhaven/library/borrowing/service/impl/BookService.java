@@ -1,8 +1,9 @@
 package com.wisdomhaven.library.borrowing.service.impl;
 
-import com.wisdomhaven.library.borrowing.client.BookClient;
+import com.wisdomhaven.library.borrowing.client.IBookClient;
 import com.wisdomhaven.library.borrowing.dto.apiResult.Book;
 import com.wisdomhaven.library.borrowing.service.IBookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ import java.util.List;
 
 @Service
 public class BookService implements IBookService {
-    private final BookClient bookClient;
+    private final IBookClient bookClient;
 
-    public BookService(BookClient bookClient) {
+    @Autowired
+    public BookService(IBookClient bookClient) {
         this.bookClient = bookClient;
     }
 

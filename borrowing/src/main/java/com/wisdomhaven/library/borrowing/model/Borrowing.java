@@ -1,6 +1,7 @@
 package com.wisdomhaven.library.borrowing.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,16 +26,21 @@ public class Borrowing {
     @Column(name = "borrowing_id")
     private int borrowingId;
 
+    @Column(name = "borrower_id")
+    @NotNull
+    private int borrowerId;
+
+    @Column(name = "borrower_name")
+    @NotNull
+    private String borrowerName;
+
     @Column(name = "is_fully_return")
     @NotNull
     private boolean isFullyReturn;
 
     @OneToMany(mappedBy = "borrowing", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @NotEmpty
     private List<BorrowingDetail> borrowingDetails;
-
-//    @ManyToOne(cascade = CascadeType.REFRESH)
-//    @JoinColumn(name = "borrowerId")
-//    private Borrower borrower;
 
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)
