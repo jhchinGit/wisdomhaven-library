@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -53,6 +54,8 @@ public class BorrowingService implements IBorrowingService {
                 .map(BorrowingConverter::toBorrowingDetail)
                 .toList();
         validateRedundantBookBorrowing(borrower, availableBooks);
+
+        bookIdList.forEach(bookId -> this.bookService.updateBookAvailability(bookId, false));
 
         Borrowing borrowing = this.borrowingRepository.save(
                 Borrowing
@@ -92,8 +95,16 @@ public class BorrowingService implements IBorrowingService {
             );
         }
 
-        borrowing.getBorrowingDetails().forEach(bd -> bd.setReturn(true));
-        this.borrowingDetailRepository.saveAll(borrowing.getBorrowingDetails());
+        List<BorrowingDetail> toBeUpdatedBorrowingDetailList = new ArrayList<>();
+
+        borrowing.getBorrowingDetails().forEach(bd -> {
+            if (!bd.isReturn()) {
+                this.bookService.updateBookAvailability(bd.getBookId(), true);
+                bd.setReturn(true);
+                toBeUpdatedBorrowingDetailList.add(bd);
+            }
+        });
+        this.borrowingDetailRepository.saveAll(toBeUpdatedBorrowingDetailList);
 
         borrowing.setFullyReturn(true);
         this.borrowingRepository.save(borrowing);
@@ -127,6 +138,7 @@ public class BorrowingService implements IBorrowingService {
         }
 
         borrowingDetail.setReturn(true);
+        this.bookService.updateBookAvailability(borrowingDetail.getBookId(), true);
         this.borrowingDetailRepository.save(borrowingDetail);
 
         boolean isAllBooksReturned = borrowing.getBorrowingDetails()

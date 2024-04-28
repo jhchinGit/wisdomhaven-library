@@ -2,6 +2,7 @@ package com.wisdomhaven.library.controller;
 
 import com.wisdomhaven.library.dto.request.BookRequestBody;
 import com.wisdomhaven.library.dto.request.BookRequestCriteria;
+import com.wisdomhaven.library.dto.request.BookUpdateRequestBody;
 import com.wisdomhaven.library.dto.request.PageableRequest;
 import com.wisdomhaven.library.dto.response.BookResponseDTO;
 import com.wisdomhaven.library.service.IBookService;
@@ -57,5 +58,16 @@ public class BookController {
                         bookRequestBody.author(),
                         bookRequestBody.isbn()),
                 HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/{bookId}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity updateBookAvailability(@PathVariable("bookId") Integer bookId, @RequestBody BookUpdateRequestBody bookUpdateRequestBody) {
+        RequestUtil.validate(bookUpdateRequestBody);
+
+        return ResponseUtil.buildResponseEntity(
+                this.bookService.updateBookAvailability(
+                        bookId,
+                        bookUpdateRequestBody.isAvailable()),
+                HttpStatus.OK);
     }
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 
 @Service
 public class BookService implements IBookService {
+    public static final String BOOK_ID_NOT_FOUND = "Book id %d not found.";
     private final BookRepository bookRepository;
     private static final Map<String, String> bookValidOrderByFieldMap;
     private static final List<Sort.Order> defaultBookOrderByList = List.of(Sort.Order.asc("title"));
@@ -69,7 +70,7 @@ public class BookService implements IBookService {
         return this.bookRepository.findById(bookId)
                 .map(BookConverter::toBookResponseDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format("Book id %d not found.", bookId)));
+                        String.format(BOOK_ID_NOT_FOUND, bookId)));
     }
 
     @Override
@@ -84,6 +85,17 @@ public class BookService implements IBookService {
                                         .author(author)
                                         .isbn(isbn)
                                         .build()));
+    }
+
+    @Override
+    public BookResponseDTO updateBookAvailability(Integer bookId, Boolean isAvailable) {
+        Book book = this.bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        String.format(BOOK_ID_NOT_FOUND, bookId)));
+
+        book.setAvailable(isAvailable);
+
+        return BookConverter.toBookResponseDTO(this.bookRepository.save(book));
     }
 
     private void validateBookCreation(List<Book> existingBooks, String title, String author, String isbn) {

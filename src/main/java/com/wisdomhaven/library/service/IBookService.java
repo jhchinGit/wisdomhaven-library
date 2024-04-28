@@ -13,4 +13,5 @@ public interface IBookService {
                                    String orderBy);
     BookResponseDTO getBook(Integer bookId);
     BookResponseDTO createBook(String title, String author, String isbn);
+    BookResponseDTO updateBookAvailability(Integer bookId, Boolean isAvailable);
 }

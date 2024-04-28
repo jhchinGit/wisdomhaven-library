@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IBookService {
     List<Book> getListOfBooksByIds(List<Integer> bookIds);
+    Book updateBookAvailability(Integer bookId, boolean isAvailable);
 }

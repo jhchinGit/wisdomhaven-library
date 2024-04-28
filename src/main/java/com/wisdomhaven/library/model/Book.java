@@ -36,6 +36,10 @@ public class Book {
     @NotNull
     private String isbn;
 
+    @Column(name = "is_available")
+    @NotNull
+    private boolean isAvailable;
+
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)
     private Instant createdDate;
