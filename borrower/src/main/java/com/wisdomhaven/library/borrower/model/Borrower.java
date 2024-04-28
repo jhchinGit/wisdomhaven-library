@@ -1,4 +1,4 @@
-package com.wisdomhaven.library.model;
+package com.wisdomhaven.library.borrower.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,6 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.List;
 
 @Entity
 @Table(name = "borrower")

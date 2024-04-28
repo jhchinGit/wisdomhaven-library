@@ -1,4 +1,4 @@
-package com.wisdomhaven.library.dto.request;
+package com.wisdomhaven.library.borrower.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

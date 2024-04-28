@@ -1,9 +1,7 @@
 package com.wisdomhaven.library.data;
 
 import com.wisdomhaven.library.model.Book;
-import com.wisdomhaven.library.model.Borrower;
 import com.wisdomhaven.library.repository.BookRepository;
-import com.wisdomhaven.library.repository.BorrowerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InitializeDatabase {
     @Bean
-    CommandLineRunner setupMockData(
-            BookRepository bookRepository,
-            BorrowerRepository borrowerRepository) {
+    CommandLineRunner setupMockData(BookRepository bookRepository) {
         return args -> {
             setupBook(bookRepository);
-            setupBorrower(borrowerRepository);
         };
     }
 
@@ -37,16 +32,6 @@ public class InitializeDatabase {
             bookRepository.save(Book.builder().title("The Hobbit").author("J.R.R. Tolkien").isbn("9780547928227").isAvailable(true).build());
             bookRepository.save(Book.builder().title("The Hobbit").author("J.R.R. Tolkien").isbn("9780547928227").isAvailable(true).build());
             bookRepository.save(Book.builder().title("The Lord of the Rings").author("J.R.R. Tolkien").isbn("9780544003415").isAvailable(true).build());
-        }
-    }
-
-    private void setupBorrower(BorrowerRepository borrowerRepository) {
-        if (borrowerRepository.count() == 0) {
-            borrowerRepository.save(Borrower.builder().name("John Smith").email("john.smith@example.com").build());
-            borrowerRepository.save(Borrower.builder().name("Emily Johnson").email("emily.johnson@example.com").build());
-            borrowerRepository.save(Borrower.builder().name("Michael Brown").email("michael.brown@example.com").build());
-            borrowerRepository.save(Borrower.builder().name("Sarah Davis").email("sarah.davis@example.com").build());
-            borrowerRepository.save(Borrower.builder().name("David Wilson").email("david.wilson@example.com").build());
         }
     }
 }

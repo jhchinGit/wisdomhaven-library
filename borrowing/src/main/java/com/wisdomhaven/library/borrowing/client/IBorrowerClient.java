@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name="borrowerClient", url = "localhost:8090/borrowers")
+@FeignClient(name="borrowerClient", url = "localhost:8091/borrowers")
 public interface IBorrowerClient {
     @RequestMapping(method = RequestMethod.GET, value = "/{borrowerId}", produces = "application/json")
     ResponseEntity<Borrower> getBorrower(@PathVariable("borrowerId") Integer borrowerId);

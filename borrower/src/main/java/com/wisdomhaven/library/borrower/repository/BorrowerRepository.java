@@ -1,6 +1,6 @@
-package com.wisdomhaven.library.repository;
+package com.wisdomhaven.library.borrower.repository;
 
-import com.wisdomhaven.library.model.Borrower;
+import com.wisdomhaven.library.borrower.model.Borrower;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

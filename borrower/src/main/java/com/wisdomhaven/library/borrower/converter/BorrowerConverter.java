@@ -1,7 +1,7 @@
-package com.wisdomhaven.library.converter;
+package com.wisdomhaven.library.borrower.converter;
 
-import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
-import com.wisdomhaven.library.model.Borrower;
+import com.wisdomhaven.library.borrower.dto.response.BorrowerResponseDTO;
+import com.wisdomhaven.library.borrower.model.Borrower;
 
 public class BorrowerConverter {
     private BorrowerConverter() {}

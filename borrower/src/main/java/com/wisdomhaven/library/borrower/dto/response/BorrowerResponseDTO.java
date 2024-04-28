@@ -1,4 +1,4 @@
-package com.wisdomhaven.library.dto.response;
+package com.wisdomhaven.library.borrower.dto.response;
 
 import lombok.Builder;
 

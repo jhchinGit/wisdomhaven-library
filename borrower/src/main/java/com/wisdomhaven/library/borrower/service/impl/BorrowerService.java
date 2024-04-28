@@ -1,13 +1,13 @@
-package com.wisdomhaven.library.service.impl;
+package com.wisdomhaven.library.borrower.service.impl;
 
-import com.wisdomhaven.library.constant.ErrorMessageConstants;
-import com.wisdomhaven.library.converter.BorrowerConverter;
-import com.wisdomhaven.library.dto.misc.Sortable;
-import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
-import com.wisdomhaven.library.model.Borrower;
-import com.wisdomhaven.library.repository.BorrowerRepository;
-import com.wisdomhaven.library.service.IBorrowerService;
-import com.wisdomhaven.library.util.PageableUtil;
+import com.wisdomhaven.library.borrower.constant.ErrorMessageConstants;
+import com.wisdomhaven.library.borrower.converter.BorrowerConverter;
+import com.wisdomhaven.library.borrower.dto.misc.Sortable;
+import com.wisdomhaven.library.borrower.dto.response.BorrowerResponseDTO;
+import com.wisdomhaven.library.borrower.model.Borrower;
+import com.wisdomhaven.library.borrower.repository.BorrowerRepository;
+import com.wisdomhaven.library.borrower.service.IBorrowerService;
+import com.wisdomhaven.library.borrower.util.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;

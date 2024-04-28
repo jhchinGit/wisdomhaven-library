@@ -1,6 +1,6 @@
-package com.wisdomhaven.library.service;
+package com.wisdomhaven.library.borrower.service;
 
-import com.wisdomhaven.library.dto.response.BorrowerResponseDTO;
+import com.wisdomhaven.library.borrower.dto.response.BorrowerResponseDTO;
 import org.springframework.data.domain.Page;
 
 public interface IBorrowerService {
