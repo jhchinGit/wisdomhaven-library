@@ -1,6 +1,6 @@
 package com.wisdomhaven.library.authenticator.util;
 
-import com.wisdomhaven.library.borrowing.dto.misc.Sortable;
+import com.wisdomhaven.library.authenticator.dto.misc.Sortable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;

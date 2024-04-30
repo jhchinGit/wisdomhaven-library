@@ -1,7 +1,7 @@
 package com.wisdomhaven.library.authenticator.handler;
 
-import com.wisdomhaven.library.borrowing.dto.misc.ApiErrorMessage;
-import com.wisdomhaven.library.borrowing.dto.misc.ErrorMessage;
+import com.wisdomhaven.library.authenticator.dto.misc.ApiErrorMessage;
+import com.wisdomhaven.library.authenticator.dto.misc.ErrorMessage;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

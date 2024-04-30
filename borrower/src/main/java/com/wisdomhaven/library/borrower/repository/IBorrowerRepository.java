@@ -5,10 +5,10 @@ import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface BorrowerRepository extends CrudRepository<Borrower, Integer> {
+public interface IBorrowerRepository extends ListCrudRepository<Borrower, Integer> {
     @Query(value = """
             SELECT b
             FROM Borrower b

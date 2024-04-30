@@ -1,7 +1,7 @@
 package com.wisdomhaven.library.borrower.data;
 
 import com.wisdomhaven.library.borrower.model.Borrower;
-import com.wisdomhaven.library.borrower.repository.BorrowerRepository;
+import com.wisdomhaven.library.borrower.repository.IBorrowerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InitializeDatabase {
     @Bean
-    CommandLineRunner setupMockData(BorrowerRepository borrowerRepository) {
+    CommandLineRunner setupMockData(IBorrowerRepository borrowerRepository) {
         return args -> {
             setupBorrower(borrowerRepository);
         };
     }
 
-    private void setupBorrower(BorrowerRepository borrowerRepository) {
+    private void setupBorrower(IBorrowerRepository borrowerRepository) {
         if (borrowerRepository.count() == 0) {
             borrowerRepository.save(Borrower.builder().name("John Smith").email("john.smith@example.com").build());
             borrowerRepository.save(Borrower.builder().name("Emily Johnson").email("emily.johnson@example.com").build());

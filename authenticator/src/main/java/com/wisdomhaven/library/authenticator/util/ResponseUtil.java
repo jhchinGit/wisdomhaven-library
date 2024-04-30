@@ -1,6 +1,6 @@
 package com.wisdomhaven.library.authenticator.util;
 
-import com.wisdomhaven.library.borrowing.dto.response.PageResponseDTO;
+import com.wisdomhaven.library.authenticator.dto.response.PageResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

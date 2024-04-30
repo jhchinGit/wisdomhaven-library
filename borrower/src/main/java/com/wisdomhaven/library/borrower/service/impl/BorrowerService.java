@@ -5,7 +5,7 @@ import com.wisdomhaven.library.borrower.converter.BorrowerConverter;
 import com.wisdomhaven.library.borrower.dto.misc.Sortable;
 import com.wisdomhaven.library.borrower.dto.response.BorrowerResponseDTO;
 import com.wisdomhaven.library.borrower.model.Borrower;
-import com.wisdomhaven.library.borrower.repository.BorrowerRepository;
+import com.wisdomhaven.library.borrower.repository.IBorrowerRepository;
 import com.wisdomhaven.library.borrower.service.IBorrowerService;
 import com.wisdomhaven.library.borrower.util.PageableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Service
 public class BorrowerService implements IBorrowerService {
 
-    private final BorrowerRepository borrowerRepository;
+    private final IBorrowerRepository borrowerRepository;
     private static final Map<String, String> borrowerValidOrderByFieldMap;
     private static final List<Sort.Order> defaultBorrowOrderByList = List.of(Sort.Order.asc("name"));
 
@@ -32,7 +32,7 @@ public class BorrowerService implements IBorrowerService {
     }
 
     @Autowired
-    public BorrowerService(BorrowerRepository borrowerRepository) {
+    public BorrowerService(IBorrowerRepository borrowerRepository) {
         this.borrowerRepository = borrowerRepository;
     }
 

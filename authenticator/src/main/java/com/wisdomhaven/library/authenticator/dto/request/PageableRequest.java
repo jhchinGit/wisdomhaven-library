@@ -1,6 +1,6 @@
 package com.wisdomhaven.library.authenticator.dto.request;
 
-import com.wisdomhaven.library.borrowing.constant.ErrorMessageConstants;
+import com.wisdomhaven.library.authenticator.constant.ErrorMessageConstants;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.web.bind.annotation.RequestParam;

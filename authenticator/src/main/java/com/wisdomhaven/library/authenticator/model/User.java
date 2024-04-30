@@ -2,6 +2,7 @@ package com.wisdomhaven.library.authenticator.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,15 +27,20 @@ public class User {
 
     @Column(name = "username")
     @NotNull
+    @Pattern(regexp = "^[a-zA-Z0-9]+$")
     private String username;
+
+    @Column(name = "password")
+    @NotNull
+    private String password;
 
     @Column(name = "email")
     @NotNull
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "salt")
     @NotNull
-    private String password;
+    private String salt;
 
     @Column(name = "created_date")
     @CreationTimestamp(source = SourceType.DB)
