@@ -2,7 +2,7 @@ package com.wisdomhaven.library.authenticator.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
-public record RefreshTokenRequest(
+public record AccessTokenVerificationRequest(
         @NotNull
-        String refreshToken) {
+        String accessToken) {
 }

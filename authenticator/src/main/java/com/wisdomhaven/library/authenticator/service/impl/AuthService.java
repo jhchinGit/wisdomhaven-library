@@ -33,6 +33,15 @@ public class AuthService implements IAuthService {
         return this.tokenService.refreshToken(refreshToken);
     }
 
+    @Override
+    public void verifyAccessToken(String accessToken) {
+        boolean isValid = this.tokenService.verifyAccessToken(accessToken);
+
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid access token.");
+        }
+    }
+
     private User getUser(String username, String password) {
         User user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_LOGIN));

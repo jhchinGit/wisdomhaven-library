@@ -1,5 +1,6 @@
 package com.wisdomhaven.library.authenticator.controller;
 
+import com.wisdomhaven.library.authenticator.dto.request.AccessTokenVerificationRequest;
 import com.wisdomhaven.library.authenticator.dto.request.RefreshTokenRequest;
 import com.wisdomhaven.library.authenticator.dto.request.TokenRequest;
 import com.wisdomhaven.library.authenticator.dto.response.TokenResponseDTO;
@@ -49,5 +50,18 @@ public class AuthController {
         TokenResponseDTO tokenResponseDTO = this.authService.refreshToken(refreshTokenRequest.refreshToken());
 
         return ResponseUtil.buildResponseEntity(tokenResponseDTO, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/token/verify",
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PermitAll
+    public ResponseEntity verifyAccessToken(AccessTokenVerificationRequest accessTokenVerificationRequest) {
+        // Validate access token header
+        RequestUtil.validate(accessTokenVerificationRequest);
+
+        this.authService.verifyAccessToken(accessTokenVerificationRequest.accessToken());
+
+        return ResponseUtil.buildResponseEntity(HttpStatus.OK);
     }
 }
