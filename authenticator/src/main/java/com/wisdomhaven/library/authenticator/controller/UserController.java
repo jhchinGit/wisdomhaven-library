@@ -1,6 +1,5 @@
 package com.wisdomhaven.library.authenticator.controller;
 
-import com.wisdomhaven.library.authenticator.dto.request.UserLoginRequestBody;
 import com.wisdomhaven.library.authenticator.dto.request.UserRequestBody;
 import com.wisdomhaven.library.authenticator.service.IUserService;
 import com.wisdomhaven.library.authenticator.util.RequestUtil;
@@ -32,17 +31,5 @@ public class UserController {
                 userRequestBody.email());
 
         return ResponseUtil.buildResponseEntity(HttpStatus.CREATED);
-    }
-
-    // TODO: extract to another controller
-    @PostMapping(path = "/login", consumes = "application/json")
-    public ResponseEntity login(@RequestBody UserLoginRequestBody userLoginRequestBody) {
-        RequestUtil.validate(userLoginRequestBody);
-
-        String token = this.userService.loginUser(
-                userLoginRequestBody.username(),
-                userLoginRequestBody.password());
-
-        return ResponseUtil.buildResponseEntity(token, HttpStatus.OK);
     }
 }

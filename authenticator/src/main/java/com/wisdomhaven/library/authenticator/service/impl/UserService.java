@@ -44,22 +44,4 @@ public class UserService implements IUserService {
                         .salt(salt)
                         .build());
     }
-
-    @Override
-    public String loginUser(String username, String password) {
-        User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, INVALID_LOGIN));
-
-        ShaUtils shaUtils = new ShaUtils();
-        String salt = user.getSalt();
-        String saltPassword = password + salt;
-        String hashPassword = shaUtils.digestAsHex(saltPassword);
-
-        if (!hashPassword.equals(user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INVALID_LOGIN);
-        }
-
-        // TODO: replace with JWT
-        return "Login successfully";
-    }
 }
