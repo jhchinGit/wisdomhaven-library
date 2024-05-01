@@ -6,6 +6,7 @@ import com.wisdomhaven.library.authenticator.dto.response.TokenResponseDTO;
 import com.wisdomhaven.library.authenticator.service.IAuthService;
 import com.wisdomhaven.library.authenticator.util.RequestUtil;
 import com.wisdomhaven.library.authenticator.util.ResponseUtil;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ public class AuthController {
     @PostMapping(path = "/token",
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PermitAll
     public ResponseEntity authenticateUser(TokenRequest tokenRequest) {
         RequestUtil.validate(tokenRequest);
 

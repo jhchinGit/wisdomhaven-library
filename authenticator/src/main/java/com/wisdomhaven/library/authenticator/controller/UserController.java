@@ -4,6 +4,7 @@ import com.wisdomhaven.library.authenticator.dto.request.UserRequestBody;
 import com.wisdomhaven.library.authenticator.service.IUserService;
 import com.wisdomhaven.library.authenticator.util.RequestUtil;
 import com.wisdomhaven.library.authenticator.util.ResponseUtil;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PermitAll
     @PostMapping(consumes = "application/json")
     public ResponseEntity createUser(@RequestBody UserRequestBody userRequestBody) {
         RequestUtil.validate(userRequestBody);

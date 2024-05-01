@@ -35,7 +35,7 @@ public class AuthService implements IAuthService {
 
     private User getUser(String username, String password) {
         User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, INVALID_LOGIN));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_LOGIN));
 
         ShaUtils shaUtils = new ShaUtils();
         String salt = user.getSalt();
@@ -43,7 +43,7 @@ public class AuthService implements IAuthService {
         String hashPassword = shaUtils.digestAsHex(saltPassword);
 
         if (!hashPassword.equals(user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INVALID_LOGIN);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_LOGIN);
         }
 
         return user;

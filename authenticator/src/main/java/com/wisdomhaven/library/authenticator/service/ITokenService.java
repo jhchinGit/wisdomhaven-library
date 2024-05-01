@@ -6,4 +6,5 @@ import com.wisdomhaven.library.authenticator.model.User;
 public interface ITokenService {
     TokenResponseDTO generateToken(User user);
     TokenResponseDTO refreshToken(String refreshToken);
+    boolean verifyAccessToken(String accessToken);
 }

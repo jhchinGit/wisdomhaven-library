@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,8 +89,6 @@ public class TokenService implements ITokenService {
                     .withJWTId(uuid)
                     .sign(algorithm.refreshTokenAlgorithm());
 
-            // use list string for the key claim
-
             return TokenResponseDTO
                     .builder()
                     .accessToken(newAuthToken)
@@ -100,6 +97,25 @@ public class TokenService implements ITokenService {
         } catch (JWTVerificationException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid refresh token.");
         }
+    }
+
+    @Override
+    public boolean verifyAccessToken(String accessToken) {
+        if (accessToken == null) {
+            return false;
+        }
+
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(this.secretConfiguration.getJwtAccessTokenKey()))
+                .withIssuer(ISSUER)
+                .build();
+
+        try {
+            verifier.verify(accessToken);
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+
+        return true;
     }
 
     private TokenAlgorithm getAlgorithm() {
