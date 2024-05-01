@@ -1,6 +1,6 @@
 package com.wisdomhaven.library.authenticator.config;
 
-import com.wisdomhaven.library.authenticator.Interceptor.Security.AuthorizationInterceptor;
+import com.wisdomhaven.library.authenticator.interceptor.security.AuthorizationInterceptor;
 import com.wisdomhaven.library.authenticator.service.ITokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

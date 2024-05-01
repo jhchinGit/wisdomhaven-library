@@ -1,4 +1,4 @@
-package com.wisdomhaven.library.authenticator.Interceptor.Security;
+package com.wisdomhaven.library.authenticator.interceptor.security;
 
 import com.wisdomhaven.library.authenticator.service.ITokenService;
 import jakarta.annotation.security.PermitAll;
