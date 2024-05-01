@@ -1,5 +1,6 @@
 package com.wisdomhaven.library.authenticator.service.impl;
 
+import com.wisdomhaven.library.authenticator.dto.response.AccessTokenVerificationResponseDTO;
 import com.wisdomhaven.library.authenticator.dto.response.TokenResponseDTO;
 import com.wisdomhaven.library.authenticator.model.User;
 import com.wisdomhaven.library.authenticator.repository.IUserRepository;
@@ -34,12 +35,13 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public void verifyAccessToken(String accessToken) {
+    public AccessTokenVerificationResponseDTO verifyAccessToken(String accessToken) {
         boolean isValid = this.tokenService.verifyAccessToken(accessToken);
 
-        if (!isValid) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid access token.");
-        }
+        return AccessTokenVerificationResponseDTO
+                .builder()
+                .isValid(isValid)
+                .build();
     }
 
     private User getUser(String username, String password) {

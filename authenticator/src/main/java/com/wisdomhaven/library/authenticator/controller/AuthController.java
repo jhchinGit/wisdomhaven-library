@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -44,7 +45,6 @@ public class AuthController {
             consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        // Validate access token header
         RequestUtil.validate(refreshTokenRequest);
 
         TokenResponseDTO tokenResponseDTO = this.authService.refreshToken(refreshTokenRequest.refreshToken());
@@ -53,15 +53,12 @@ public class AuthController {
     }
 
     @PostMapping(path = "/token/verify",
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     @PermitAll
-    public ResponseEntity verifyAccessToken(AccessTokenVerificationRequest accessTokenVerificationRequest) {
-        // Validate access token header
+    public ResponseEntity verifyAccessToken(@RequestBody AccessTokenVerificationRequest accessTokenVerificationRequest) {
         RequestUtil.validate(accessTokenVerificationRequest);
 
-        this.authService.verifyAccessToken(accessTokenVerificationRequest.accessToken());
-
-        return ResponseUtil.buildResponseEntity(HttpStatus.OK);
+        return ResponseUtil.buildResponseEntity(this.authService.verifyAccessToken(accessTokenVerificationRequest.accessToken()), HttpStatus.OK);
     }
 }
