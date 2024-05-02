@@ -1,9 +1,9 @@
-package com.wisdomhaven.library.book.service.impl;
+package com.wisdomhaven.library.borrower.service.impl;
 
-import com.wisdomhaven.library.book.client.IAuthenticatorClient;
-import com.wisdomhaven.library.book.dto.request.AccessTokenVerificationRequest;
-import com.wisdomhaven.library.book.service.IAuthenticatorService;
-import com.wisdomhaven.library.book.util.TokenUtil;
+import com.wisdomhaven.library.borrower.client.IAuthenticatorClient;
+import com.wisdomhaven.library.borrower.dto.request.AccessTokenVerificationRequest;
+import com.wisdomhaven.library.borrower.service.IAuthenticatorService;
+import com.wisdomhaven.library.borrower.util.TokenUtil;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

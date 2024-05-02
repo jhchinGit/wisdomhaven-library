@@ -21,18 +21,18 @@ import java.util.Map;
 @Service
 public class BookService implements IBookService {
     public static final String BOOK_ID_NOT_FOUND = "Book id %d not found.";
-    private final BookRepository bookRepository;
     private static final Map<String, String> bookValidOrderByFieldMap;
     private static final List<Sort.Order> defaultBookOrderByList = List.of(Sort.Order.asc("title"));
     private static final String UNMATCHED_BOOK_TITLE_OR_AUTHOR =
             "The ISBN %s corresponds to an existing book, but either the title or the author does not match.";
-
     static {
         bookValidOrderByFieldMap = new HashMap<>();
         bookValidOrderByFieldMap.put("title", "title");
         bookValidOrderByFieldMap.put("author", "author");
         bookValidOrderByFieldMap.put("isbn", "isbn");
     }
+
+    private final BookRepository bookRepository;
 
     @Autowired
     public BookService(BookRepository bookRepository) {

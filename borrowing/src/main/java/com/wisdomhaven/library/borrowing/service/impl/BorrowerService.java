@@ -19,8 +19,9 @@ public class BorrowerService implements IBorrowerService {
     }
 
     @Override
-    public Borrower getBorrowerById(Integer borrowerId) {
-        ResponseEntity<Borrower> borrowerResponseEntity = this.borrowerClient.getBorrower(borrowerId);
+    public Borrower getBorrowerById(String accessToken, Integer borrowerId) {
+        ResponseEntity<Borrower> borrowerResponseEntity = this.borrowerClient
+                .getBorrower(accessToken, borrowerId);
 
         if (borrowerResponseEntity.getStatusCode().is2xxSuccessful()) {
             return borrowerResponseEntity.getBody();

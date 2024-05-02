@@ -5,7 +5,7 @@ import com.wisdomhaven.library.borrowing.dto.response.BorrowingResponseDTO;
 import java.util.List;
 
 public interface IBorrowingService {
-    BorrowingResponseDTO createBorrowing(Integer borrowerId, List<Integer> bookIdList);
-    String returnAllBooks(Integer borrowingId);
-    String returnBookByBookId(Integer borrowingId, Integer bookId);
+    BorrowingResponseDTO createBorrowing(String accessToken, Integer borrowerId, List<Integer> bookIdList);
+    String returnAllBooks(String accessToken, Integer borrowingId);
+    String returnBookByBookId(String accessToken, Integer borrowingId, Integer bookId);
 }

@@ -23,7 +23,7 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<Book> getListOfBooksByIds(List<Integer> bookIds) {
+    public List<Book> getListOfBooksByIds(String accessToken, List<Integer> bookIds) {
         if (bookIds.isEmpty()) {
             return new ArrayList<>();
         }
@@ -31,7 +31,7 @@ public class BookService implements IBookService {
         return bookIds
                 .stream()
                 .map(bookId -> {
-                    ResponseEntity<Book> bookResponseEntity = this.bookClient.getBook(bookId);
+                    ResponseEntity<Book> bookResponseEntity = this.bookClient.getBook(accessToken, bookId);
 
                     if (bookResponseEntity.getStatusCode().is2xxSuccessful()) {
                         return bookResponseEntity.getBody();
@@ -45,8 +45,8 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public Book updateBookAvailability(Integer bookId, boolean isAvailable) {
-        ResponseEntity<Book> bookResponseEntity = this.bookClient.updateBookAvailability(bookId,
+    public Book updateBookAvailability(String accessToken, Integer bookId, boolean isAvailable) {
+        ResponseEntity<Book> bookResponseEntity = this.bookClient.updateBookAvailability(accessToken, bookId,
                 BookUpdateRequestBody
                         .builder()
                         .isAvailable(isAvailable)

@@ -41,6 +41,7 @@ public class UserService implements IUserService {
                         .username(username.toLowerCase())
                         .password(hashPassword)
                         .email(email.toLowerCase())
+                        .isActive(true)
                         .salt(salt)
                         .build());
     }

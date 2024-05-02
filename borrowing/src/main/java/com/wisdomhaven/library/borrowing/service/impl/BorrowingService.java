@@ -45,17 +45,17 @@ public class BorrowingService implements IBorrowingService {
 
     @Override
     @Transactional
-    public BorrowingResponseDTO createBorrowing(Integer borrowerId, List<Integer> bookIdList) {
+    public BorrowingResponseDTO createBorrowing(String accessToken, Integer borrowerId, List<Integer> bookIdList) {
         validateBookIdListDuplication(bookIdList);
-        Borrower borrower = this.borrowerService.getBorrowerById(borrowerId);
-        List<Book> availableBooks = getAvailableBooks(bookIdList);
+        Borrower borrower = this.borrowerService.getBorrowerById(accessToken, borrowerId);
+        List<Book> availableBooks = getAvailableBooks(accessToken, bookIdList);
         List<BorrowingDetail> borrowingDetails = availableBooks
                 .stream()
                 .map(BorrowingConverter::toBorrowingDetail)
                 .toList();
         validateRedundantBookBorrowing(borrower, availableBooks);
 
-        bookIdList.forEach(bookId -> this.bookService.updateBookAvailability(bookId, false));
+        bookIdList.forEach(bookId -> this.bookService.updateBookAvailability(accessToken, bookId, false));
 
         Borrowing borrowing = this.borrowingRepository.save(
                 Borrowing
@@ -81,7 +81,7 @@ public class BorrowingService implements IBorrowingService {
 
     @Override
     @Transactional
-    public String returnAllBooks(Integer borrowingId) {
+    public String returnAllBooks(String accessToken, Integer borrowingId) {
         Borrowing borrowing = this.borrowingRepository.findById(borrowingId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -99,7 +99,7 @@ public class BorrowingService implements IBorrowingService {
 
         borrowing.getBorrowingDetails().forEach(bd -> {
             if (!bd.isReturn()) {
-                this.bookService.updateBookAvailability(bd.getBookId(), true);
+                this.bookService.updateBookAvailability(accessToken, bd.getBookId(), true);
                 bd.setReturn(true);
                 toBeUpdatedBorrowingDetailList.add(bd);
             }
@@ -113,7 +113,7 @@ public class BorrowingService implements IBorrowingService {
     }
 
     @Override
-    public String returnBookByBookId(Integer borrowingId, Integer bookId) {
+    public String returnBookByBookId(String accessToken, Integer borrowingId, Integer bookId) {
         Borrowing borrowing = this.borrowingRepository.findById(borrowingId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -138,7 +138,7 @@ public class BorrowingService implements IBorrowingService {
         }
 
         borrowingDetail.setReturn(true);
-        this.bookService.updateBookAvailability(borrowingDetail.getBookId(), true);
+        this.bookService.updateBookAvailability(accessToken, borrowingDetail.getBookId(), true);
         this.borrowingDetailRepository.save(borrowingDetail);
 
         boolean isAllBooksReturned = borrowing.getBorrowingDetails()
@@ -168,8 +168,8 @@ public class BorrowingService implements IBorrowingService {
         }
     }
 
-    private List<Book> getAvailableBooks(List<Integer> bookIdList) {
-        List<Book> books = this.bookService.getListOfBooksByIds(bookIdList);
+    private List<Book> getAvailableBooks(String accessToken, List<Integer> bookIdList) {
+        List<Book> books = this.bookService.getListOfBooksByIds(accessToken, bookIdList);
         List<Integer> foundBookIdList = books
                 .stream()
                 .filter(Book::isAvailable)
