@@ -43,6 +43,7 @@ public class InitializeDatabase {
                         .username(username.toLowerCase())
                         .password(hashPassword)
                         .email(email.toLowerCase())
+                        .isActive(true)
                         .salt(salt)
                         .build());
     }

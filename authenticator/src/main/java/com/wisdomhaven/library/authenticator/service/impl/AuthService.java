@@ -1,6 +1,5 @@
 package com.wisdomhaven.library.authenticator.service.impl;
 
-import com.wisdomhaven.library.authenticator.dto.response.AccessTokenVerificationResponseDTO;
 import com.wisdomhaven.library.authenticator.dto.response.TokenResponseDTO;
 import com.wisdomhaven.library.authenticator.model.User;
 import com.wisdomhaven.library.authenticator.repository.IUserRepository;
@@ -32,16 +31,6 @@ public class AuthService implements IAuthService {
     @Override
     public TokenResponseDTO refreshToken(String refreshToken) {
         return this.tokenService.refreshToken(refreshToken);
-    }
-
-    @Override
-    public AccessTokenVerificationResponseDTO verifyAccessToken(String accessToken) {
-        boolean isValid = this.tokenService.verifyAccessToken(accessToken);
-
-        return AccessTokenVerificationResponseDTO
-                .builder()
-                .isValid(isValid)
-                .build();
     }
 
     private User getUser(String username, String password) {

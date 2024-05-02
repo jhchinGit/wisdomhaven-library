@@ -1,7 +1,6 @@
 package com.wisdomhaven.library.book.service.impl;
 
 import com.wisdomhaven.library.book.client.IAuthenticatorClient;
-import com.wisdomhaven.library.book.dto.apiResult.AccessTokenVerificationResponseDTO;
 import com.wisdomhaven.library.book.dto.request.AccessTokenVerificationRequest;
 import com.wisdomhaven.library.book.service.IAuthenticatorService;
 import org.springframework.beans.factory.ObjectProvider;
@@ -24,19 +23,23 @@ public class AuthenticatorService implements IAuthenticatorService {
             return false;
         }
 
+        String bearerAccessToken = String.format("Bearer %s", accessToken);
+
         AccessTokenVerificationRequest accessTokenVerificationRequest = AccessTokenVerificationRequest
                 .builder()
                 .accessToken(accessToken)
                 .build();
 
-        ResponseEntity<AccessTokenVerificationResponseDTO> verificationResponseDTOResponseEntity =
-                getAuthenticatorClient().verifyAccessToken(accessTokenVerificationRequest);
+        ResponseEntity verificationResponseDTOResponseEntity;
 
-        if (verificationResponseDTOResponseEntity.getStatusCode().is2xxSuccessful()) {
-            return verificationResponseDTOResponseEntity.getBody().isValid();
+        try {
+            verificationResponseDTOResponseEntity = getAuthenticatorClient()
+                    .verifyAccessToken(bearerAccessToken, accessTokenVerificationRequest);
+        } catch (Exception e) {
+            return false;
         }
 
-        return false;
+        return verificationResponseDTOResponseEntity.getStatusCode().is2xxSuccessful();
     }
 
     private IAuthenticatorClient getAuthenticatorClient() {

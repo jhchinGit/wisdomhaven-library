@@ -38,6 +38,10 @@ public class User {
     @NotNull
     private String email;
 
+    @Column(name = "is_active")
+    @NotNull
+    private Boolean isActive;
+
     @Column(name = "salt")
     @NotNull
     private String salt;

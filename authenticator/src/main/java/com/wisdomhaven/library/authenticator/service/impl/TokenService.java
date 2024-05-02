@@ -1,7 +1,6 @@
 package com.wisdomhaven.library.authenticator.service.impl;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -10,6 +9,7 @@ import com.wisdomhaven.library.authenticator.config.SecretConfiguration;
 import com.wisdomhaven.library.authenticator.dto.response.TokenResponseDTO;
 import com.wisdomhaven.library.authenticator.model.User;
 import com.wisdomhaven.library.authenticator.service.ITokenService;
+import com.wisdomhaven.library.authenticator.service.IUserService;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,10 +24,13 @@ public class TokenService implements ITokenService {
     private static final String ISSUER = "WisdomHaven";
     private static final String JWT_SUBJECT = "General Usage";
     private final SecretConfiguration secretConfiguration;
+    private final IUserService userService;
 
     @Autowired
-    public TokenService(SecretConfiguration secretConfiguration) {
+    public TokenService(SecretConfiguration secretConfiguration,
+                        IUserService userService) {
         this.secretConfiguration = secretConfiguration;
+        this.userService = userService;
     }
 
     @Override
@@ -88,7 +91,7 @@ public class TokenService implements ITokenService {
                     .withExpiresAt(ZonedDateTime.now().plusHours(6).toInstant())
                     .withJWTId(uuid)
                     .sign(algorithm.refreshTokenAlgorithm());
-
+            // TODO: check is user still active
             return TokenResponseDTO
                     .builder()
                     .accessToken(newAuthToken)
@@ -111,6 +114,7 @@ public class TokenService implements ITokenService {
 
         try {
             verifier.verify(accessToken);
+            // TODO: check is user still active
         } catch (JWTVerificationException e) {
             return false;
         }

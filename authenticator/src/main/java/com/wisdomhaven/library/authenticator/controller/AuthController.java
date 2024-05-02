@@ -55,10 +55,9 @@ public class AuthController {
     @PostMapping(path = "/token/verify",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @PermitAll
     public ResponseEntity verifyAccessToken(@RequestBody AccessTokenVerificationRequest accessTokenVerificationRequest) {
         RequestUtil.validate(accessTokenVerificationRequest);
 
-        return ResponseUtil.buildResponseEntity(this.authService.verifyAccessToken(accessTokenVerificationRequest.accessToken()), HttpStatus.OK);
+        return ResponseUtil.buildResponseEntity(HttpStatus.OK);
     }
 }
